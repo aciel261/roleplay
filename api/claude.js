@@ -44,6 +44,7 @@ module.exports = async (req, res) => {
   if (!token) return res.status(401).json({ error: "unauthorized" });
 
   let user;
+  console.log("DEBUG ws:", !!ANTHROPIC_WORKSPACE_ID, (ANTHROPIC_WORKSPACE_ID || "").length);
   try { user = await getUser(token); } catch (e) { return res.status(502).json({ error: "auth_unreachable" }); }
   if (!user || !user.id) return res.status(401).json({ error: "unauthorized" });
 

@@ -1,0 +1,1230 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Latihan Roleplay SC · HydroClean</title></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout follows the Kalkulator HydroClean: steps bar on top (1 Pilih latihan → 2 Latihan → 3 Nilai), one card per step, same tokens. */
+:root{
+  --bg:#F2F6FB; --surface:#FFFFFF; --surface-2:#E8F0FA; --ink:#0E1C2C; --ink-2:#4A5C70; --line:#D4DFEB;
+  --accent:#1256B0; --accent-ink:#FFFFFF; --accent-soft:#E3EDFA;
+  --good:#157A4A; --good-soft:#E2F4EA; --warn:#9A5B0C; --warn-soft:#FCF1DE; --bad:#B3261E; --bad-soft:#FBE6E4;
+  --f-ui:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1420; --surface:#111D2C; --surface-2:#172739; --ink:#E4ECF5; --ink-2:#9DB0C4; --line:#24364B;
+  --accent:#5B9BF0; --accent-ink:#0B1420; --accent-soft:#16283F;
+  --good:#5CCB93; --good-soft:#12291E; --warn:#E8B062; --warn-soft:#2E2413; --bad:#F08A80; --bad-soft:#33171A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1420; --surface:#111D2C; --surface-2:#172739; --ink:#E4ECF5; --ink-2:#9DB0C4; --line:#24364B;
+  --accent:#5B9BF0; --accent-ink:#0B1420; --accent-soft:#16283F;
+  --good:#5CCB93; --good-soft:#12291E; --warn:#E8B062; --warn-soft:#2E2413; --bad:#F08A80; --bad-soft:#33171A; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-ui);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{margin:0;line-height:1.2;text-wrap:balance}
+h1{font-size:clamp(24px,4.5vw,32px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:19px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+p{margin:0}
+.muted{color:var(--ink-2)} .small{font-size:13px} .mono{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.btn{appearance:none;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:700;font-size:14px;border-radius:10px;padding:10px 16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,textarea:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.notice{border-radius:10px;padding:10px 12px;font-size:13.5px;background:var(--warn-soft);color:var(--ink);border:1px solid var(--warn)}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+/* steps bar, same as kalkulator */
+.steps{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+.steps li{flex:1;font-size:12px;font-weight:600;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+.steps li::before{content:"";height:4px;border-radius:4px;background:var(--line)}
+.steps li.on{color:var(--accent)} .steps li.on::before{background:var(--accent)}
+.steps li.done::before{background:var(--accent);opacity:.45}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;font:inherit;font-weight:700;font-size:14px;color:var(--ink-2);padding:8px 12px;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.resume{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:12px;padding:12px 14px}
+/* scenario board */
+.roles{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.rbtn{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:13.5px;border-radius:999px;padding:7px 14px;cursor:pointer}
+.rbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.gsec{grid-column:1/-1;margin:6px 0 -2px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:12px}
+.scen{appearance:none;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-width:0}
+.scen:hover{border-color:var(--accent)}
+.scen .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.scen .nm{font-weight:700;font-size:15px}
+.scen .q{font-size:13.5px;color:var(--ink-2);font-style:italic}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.pill.lv1{background:var(--good-soft);color:var(--good)} .pill.lv2{background:var(--warn-soft);color:var(--warn)} .pill.lv3{background:var(--bad-soft);color:var(--bad)}
+.pill.ref{background:var(--accent-soft);color:var(--accent)}
+.best{font-family:var(--f-num);font-size:12px;color:var(--ink-2)}
+/* flow tracker: 4 stages of the client journey */
+.flow{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.flow li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:2px 10px;align-items:start;position:relative;padding-bottom:12px}
+.flow li:not(:last-child)::after{content:"";position:absolute;left:12px;top:26px;bottom:2px;width:2px;background:var(--line)}
+.flow .dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;border:2px solid var(--line);background:var(--surface);color:var(--ink-2);font-family:var(--f-num)}
+.flow li.ok .dot{background:var(--good);border-color:var(--good);color:#fff}
+.flow li.now .dot{border-color:var(--accent);color:var(--accent)}
+.flow li.skip .dot{border-style:dashed}
+.flow b{font-size:13.5px;line-height:26px}
+.flow li.skip b{color:var(--ink-2);font-weight:600}
+.flow span.s{grid-column:2;font-size:12.5px;color:var(--ink-2)}
+.next{font-size:13px;background:var(--accent-soft);border-radius:10px;padding:8px 10px}
+/* room */
+.room{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:820px){.room{grid-template-columns:minmax(0,1fr)}}
+.brief{display:flex;flex-direction:column;gap:12px}
+.brief dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;margin:0;font-size:13.5px}
+.brief dt{color:var(--ink-2);font-weight:600}
+.brief dd{margin:0}
+.hint{font-size:13px;background:var(--surface-2);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.hint ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.chat{display:flex;flex-direction:column;min-height:420px;max-height:min(72vh,760px);padding:0;overflow:hidden}
+.chat-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.counter{font-family:var(--f-num);font-size:12.5px;color:var(--ink-2)}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.msg{max-width:82%;border-radius:14px;padding:9px 12px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
+.msg.k{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.sc{align-self:flex-end;background:var(--accent-soft);border:1px solid var(--accent);border-bottom-right-radius:4px}
+.msg .who{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-bottom:2px}
+.msg.sys{align-self:center;max-width:95%;background:transparent;color:var(--ink-2);font-size:12.5px;text-align:center;padding:2px 8px}
+.typing{align-self:flex-start;font-size:13px;color:var(--ink-2);font-style:italic}
+.composer{border-top:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.composer textarea{width:100%;min-height:84px;resize:vertical;font:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+.composer .row{justify-content:space-between}
+/* quiz options */
+.opts{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--surface)}
+.opt{appearance:none;text-align:left;font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;white-space:pre-wrap;display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt .l{font-family:var(--f-num);font-weight:600;color:var(--accent)}
+.opt.picked{border-color:var(--accent);background:var(--accent-soft)}
+.opt:disabled{cursor:default}
+.fb{border-radius:12px;padding:10px 12px;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.fb.good{background:var(--good-soft)} .fb.mid{background:var(--warn-soft)} .fb.bad{background:var(--bad-soft)}
+.fb .ideal{white-space:pre-wrap;background:var(--surface);border-radius:8px;padding:8px 10px;font-size:13px}
+/* result */
+.score{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:720px){.score{grid-template-columns:minmax(0,1fr)}}
+.big{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.big .n{font-family:var(--f-num);font-size:64px;font-weight:600;line-height:1}
+.big .n small{font-size:20px;color:var(--ink-2)}
+.verdict{font-weight:700;border-radius:8px;padding:4px 10px;font-size:13.5px;white-space:nowrap}
+.v-good{background:var(--good-soft);color:var(--good)} .v-mid{background:var(--warn-soft);color:var(--warn)} .v-bad{background:var(--bad-soft);color:var(--bad)}
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}
+.bar-row b{font-size:14px}
+.bar-row .pts{font-family:var(--f-num);font-size:13px}
+.track{grid-column:1/-1;height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.fill{height:100%;border-radius:99px;background:var(--accent)}
+.bar-row p{grid-column:1/-1;font-size:13px;color:var(--ink-2)}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.chk{font-size:12.5px;font-weight:600;border-radius:8px;padding:4px 10px;border:1px solid var(--line);background:var(--surface)}
+.chk.ok{border-color:var(--good);color:var(--good)} .chk.no{border-color:var(--bad);color:var(--bad)}
+.fix{border-left:3px solid var(--warn);padding:6px 0 6px 12px;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.fix .better{background:var(--good-soft);border-radius:8px;padding:8px 10px;white-space:pre-wrap;font-size:13.5px}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+details.tx summary{cursor:pointer;font-weight:700;color:var(--accent)}
+details.tx .msgs{max-height:none;background:transparent;padding:10px 0}
+.qstep{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.qstep:first-child{border-top:0}
+.qstep .pts{font-family:var(--f-num);font-size:13px}
+.qstep p{grid-column:1/-1;font-size:13px;color:var(--ink-2)}
+/* tables */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{text-align:right;font-family:var(--f-num);white-space:nowrap}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover{background:var(--surface-2)}
+.empty{font-size:13.5px;color:var(--ink-2);border:1px dashed var(--line);border-radius:10px;padding:12px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <header style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1 1 320px">
+      <p class="kicker">HydroClean x SiriBersih · Latihan SC &amp; Scheduler</p>
+      <h1>Latihan Roleplay SC</h1>
+      <p class="muted" id="lede">Pilih peran dan latihan, layani klien sesuai SOP, lalu lihat nilaimu.</p>
+    </header>
+    <button class="btn ghost" type="button" id="home" hidden>← Menu utama</button>
+  </div>
+  <ol class="steps" aria-label="Langkah">
+    <li id="st1" class="on">1. Pilih latihan</li>
+    <li id="st2">2. Latihan</li>
+    <li id="st3">3. Nilai</li>
+  </ol>
+  <div id="ai-note" class="notice" hidden></div>
+
+  <!-- STEP 1: BOARD -->
+  <section id="v-board" style="display:flex;flex-direction:column;gap:14px">
+    <div id="resume"></div>
+    <div class="roles" role="group" aria-label="Peran"><span class="small muted">Peran saya:</span><button type="button" class="rbtn" id="role-sc" aria-pressed="true">Service Consultant</button><button type="button" class="rbtn" id="role-sch" aria-pressed="false">Scheduler</button><span class="small muted" id="role-note"></span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-chat" aria-selected="true">Latihan chat (ketik sendiri)</button>
+      <button class="tab" role="tab" id="t-quiz" aria-selected="false">Quiz pilihan (pemanasan)</button>
+      <button class="tab" role="tab" id="t-mine" aria-selected="false">Riwayat saya</button>
+      <button class="tab" role="tab" id="t-team" aria-selected="false" hidden>Rekap tim</button>
+    </div>
+    <div id="p-chat" style="display:flex;flex-direction:column;gap:12px">
+      <div id="chat-note" class="notice" hidden>Chat dengan Claude sedang tidak tersedia. Quiz pilihan tetap bisa dipakai.</div>
+      <div class="row" style="justify-content:space-between">
+        <p class="small muted">Klien bertanya, kamu ketik jawabanmu sendiri. Claude berperan sebagai klien dan menilai di akhir. Sekitar 5–10 menit per sesi.</p>
+        <label class="row small" for="o-hint" style="gap:6px;cursor:pointer"><input type="checkbox" id="o-hint"> Tampilkan contekan SOP (untuk peserta baru)</label>
+      </div>
+      <div class="grid" id="scen-grid"></div>
+    </div>
+    <div id="p-quiz" hidden style="display:flex;flex-direction:column;gap:12px">
+      <p class="small muted">Pilih balasan terbaik di setiap giliran. Langkah berikutnya mengikuti pilihanmu. Tanpa AI, nilai langsung keluar. Untuk pemanasan atau SC baru. Latihan utama tetap di tab chat.</p>
+      <div class="grid" id="quiz-grid"></div>
+    </div>
+    <div id="p-mine" hidden></div>
+    <div id="p-team" hidden></div>
+  </section>
+
+  <!-- STEP 2a: CHAT ROOM -->
+  <section id="v-room" hidden>
+    <div class="room">
+      <aside class="card brief" id="brief"></aside>
+      <div class="card chat">
+        <div class="chat-head">
+          <div><b id="chat-name">Klien</b><div class="small muted" id="chat-sub"></div></div>
+          <span class="counter" id="counter">0 bubble SC</span>
+        </div>
+        <div class="msgs" id="msgs" aria-live="polite"></div>
+        <div class="composer">
+          <label for="box" class="small muted">Balasan kamu (1 kirim = 1 bubble WhatsApp)</label>
+          <textarea id="box" placeholder="Tulis balasan ke klien…"></textarea>
+          <div class="row">
+            <div class="row"><button class="btn ghost sm" type="button" id="ins-link">+ Link kalkulator</button><span class="small muted">Ctrl + Enter untuk kirim</span></div>
+            <div class="row"><button class="btn ghost" type="button" id="finish">Selesai & nilai</button><button class="btn" type="button" id="send">Kirim</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2b: QUIZ ROOM -->
+  <section id="v-quiz" hidden>
+    <div class="room">
+      <aside class="card brief" id="qbrief"></aside>
+      <div class="card chat">
+        <div class="chat-head">
+          <div><b id="q-name">Klien</b><div class="small muted" id="q-sub"></div></div>
+          <span class="counter" id="q-counter"></span>
+        </div>
+        <div class="msgs" id="q-msgs" aria-live="polite"></div>
+        <div class="opts" id="q-opts"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: RESULT -->
+  <section id="v-res" hidden style="display:flex;flex-direction:column;gap:14px"></section>
+</div>
+
+<script src="/vendor/supabase.js"></script>
+<script src="/runtime.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LINK = "[link kalkulator]";
+const MAX_TURNS = 12;
+const KB = `DAFTAR HARGA (Rupiah, sudah termasuk PPN). Format: HydroClean / Cuci Higienis / Cuci Noda.
+Kasur (1 layanan utuh seluruh bagian, termasuk vakum bantal/guling yang tidak dicuci): Super King 2x2 m (4 bantal/guling) 470.000 / 1.250.000 / 1.580.000; King 1,8x2 (4) 410.000 / 1.085.000 / 1.355.000; Queen 1,6x2 (4) 360.000 / 870.000 / 1.080.000; Single 1,2x2 (2) 300.000 / 690.000 / 855.000; Single 1x2 (2) 240.000 / 585.000 / 720.000; Baby Matras (2) 110.000 / 350.000 / 425.000.
+Divan / Headboard / Kasur Lipat (kasur lipat maks. tebal 10 cm; lebih tebal dihitung sebagai Kasur): Super King 200.000 / 590.000 / 755.000; King 180.000 / 517.500 / 652.500; Queen 160.000 / 415.000 / 520.000; Single 1,2 120.000 / 315.000 / 397.500; Single 1 100.000 / 272.500 / 340.000. Matras Protector: hanya HydroClean, harga sama dengan kolom HydroClean.
+Sofa per seat (1 seat = 1 bantalan duduk; sofa L: sudut dihitung 1 seat) 200.000 / 460.000 / 560.000; Sofa Bed 2/3 lipatan 470.000 / 1.200.000 / 1.450.000; Kursi makan/kantor per kursi 80.000 / 230.000 / 290.000.
+Hanya HydroClean: Baby box/car seat/stroller 110.000; Bantal bayi/boneka kecil 20.000; Boneka medium >50 cm 50.000; Bantal/guling 30.000; Gorden lipatan 80.000/m²; Gorden lurus 50.000/m²; Karpet 80.000/m² (panjang x lebar, bisa diukur di lokasi); MicroTech-Ray 250.000 per 30 menit.
+
+LAYANAN: HydroClean = vakum debu dan tungau penyebab alergi, 100% kering, item tidak dibasahi, TANPA bahan kimia; langsung kering. Vakum tidak menghilangkan keringat. Cuci Higienis (SiriBersih) = HydroClean + cuci, mengangkat keringat/kotoran pemakaian, TIDAK menghilangkan noda, kering 3–4 jam; ini REKOMENDASI utama. Cuci Noda (SiriBersih) = HydroClean + cuci noda, noda berkurang hingga 90% tergantung kondisi, kering 3–4 jam. Higienis dan Noda tidak digabung; harga keduanya sudah termasuk HydroClean. SiriBersih memakai cairan pembersih.
+Noda yang TIDAK bisa dihilangkan: darah, tinta, jamur, lem, minyak, luntur bahan. SiriBersih TIDAK mengerjakan bahan latex, beludru, bulu angsa, suede, parasut. Semua layanan tidak mengerjakan item basah/lembap, lapuk, busa tanpa cover; HydroClean tidak mengerjakan item berbau tidak sedap.
+
+AREA: HydroClean di 11 kota: Jakarta, Bogor, Depok, Tangerang, Bekasi, Bandung, Cikarang, Karawang, Surabaya, Bali, Medan. Cuci Higienis/Cuci Noda HANYA di Jakarta, Kota Bekasi, Depok, Tangerang Kota, Tangerang Selatan (BUKAN Kabupaten Bekasi, Kabupaten Tangerang, Cikarang, Bogor, Karawang, Bandung, Surabaya, Bali, Medan).
+
+PEMBAYARAN: di hari pengerjaan atau setelah invoice tim Finance (H+1), lewat transfer ke rekening resmi atau Virtual Account di invoice. Tanpa DP. Tidak ada biaya transportasi. Tanpa diskon. Pembatalan Rp100.000 hanya jika klien batal di hari-H saat tim sudah di lokasi. Item rusak akibat pengerjaan: tidak ditagih + penggantian maks. 3x harga jasa. Keluhan maks. 1 x 24 jam setelah selesai, dengan foto/video. Kondisi item dicek bersama klien sebelum dan setelah pengerjaan (klien diminta ada di rumah). Butuh akses air keran + tempat buang air kotor; SiriBersih butuh air panas.
+
+KALKULATOR HYDROCLEAN: klien pilih kota → item → isi data (nama, WA, alamat, kecamatan, link lokasi, tanggal + Pagi/Siang/Sore/Fleksibel, catatan) → baca S&K → centang persetujuan → "Kirim via WhatsApp". Hasilnya teks WORK ORDER ke SC. Gorden/karpet/bantal bisa "hitung di lokasi" → "Total sementara", total final dikirim di chat setelah diukur dan disetujui klien. TIDAK ada tombol revisi di kalkulator dan data order tidak tersimpan di HP klien: semua perubahan setelah WO terkirim lewat chat WhatsApp. SC/Scheduler menghitung harga di kalkulator, mengirim ringkasan revisi (nomor WO + -R1, item, total baru, selisih, jadwal), dan revisi final setelah klien membalas "Saya setuju".`;
+
+const SOP = `SOP CHAT SC v5 (ringkas):
+- Satu balasan = satu bubble. Tanpa bubble basa-basi ("baik/siap/ditunggu"). Klien bilang "OK/terima kasih" setelah konfirmasi = tidak perlu dibalas. Jangan batasi klien bicara.
+- R1 (pesan pertama "info HydroClean"/teks iklan): satu bubble berisi sapaan + nama SC, penjelasan HydroClean (vakum debu & tungau, 100% kering, tanpa bahan kimia), vakum tidak menghilangkan keringat sehingga REKOMENDASI Cuci Higienis (SiriBersih, kering 3–4 jam), noda → Cuci Noda, link kalkulator, satu pertanyaan (kota + item, foto noda).
+- R2 (tanya harga dulu): harga ada di kalkulator + link + satu pertanyaan (ukuran/kota). Harga diambil dari kalkulator/daftar harga, jangan mengarang.
+- R3 (foto/cerita masalah): sebut layanan yang pas. Ada noda → Cuci Noda (hingga 90%, kering 3–4 jam). Tanpa noda (alergi/tungau/keringat) → Cuci Higienis. Jujur soal noda yang tidak bisa hilang dan bahan yang tidak bisa dicuci; tawarkan HydroClean.
+- R4/R5 (area): sebut kota yang tersedia; Cuci hanya 5 area. Kota tidak tersedia → tutup dengan sopan, tanpa memaksa.
+- R6 FAQ: jawab singkat, akurat, lalu arahkan ke kalkulator.
+- Keberatan harga: tanpa diskon; bantu cek ulang layanan per item (misal item tanpa noda cukup HydroClean).
+- R7 (tidak bisa isi kalkulator): minta semua data dalam SATU bubble (nama, alamat + Share Location, item + ukuran, layanan, tanggal & waktu), SC isikan kalkulator, kirim teks WO + link S&K, klien balas "Saya setuju".
+- R8 (tidak tahu ukuran): foto label/panjang x lebar; gorden/karpet/bantal "hitung di lokasi".
+- R9 ("nanti dulu"): tanpa tekanan, link tetap berlaku, sepakati waktu menghubungi lagi.
+- R10 (klien bahasa Inggris): balas dalam bahasa Inggris, isi seperti R1.
+- R11 (ubah setelah WO, semua lewat chat): ubah tanggal saja cukup dikonfirmasi di chat setelah cek timetable (total tetap, tanpa biaya); tambah/ubah item atau layanan: SC hitung harga di kalkulator, kirim ringkasan revisi -R1 dalam satu bubble (item, total baru, selisih), final setelah klien balas "Saya setuju". JANGAN minta klien isi ulang kalkulator.
+- Alur C (WO masuk) cek 6 langkah: 1 persetujuan [✓]; 2 data & lokasi (lokasi "pencarian dari alamat" = minta Share Location); 3 area & layanan cocok (Cuci hanya 5 area, batasan S&K, baca Catatan); 4 item & total (total sementara, aturan kasur lipat ≤10 cm); 5 slot dari timetable scheduler (Fleksibel = SC pilih slot; slot penuh = tawarkan tepat 2 pilihan); 6 kirim Template C. Jika persetujuan [ ], minta klien balas "Saya setuju" di chat. Jika ada masalah lain, jelaskan dalam satu bubble, kirim ringkasan revisi, minta "Saya setuju".
+- Template C (satu bubble): WO diterima + nomor, jadwal dikunci (hari, tanggal, jam), cek kondisi item bersama sebelum & setelah (mohon ada di rumah), siapkan akses air keran & buang air kotor (+ air panas untuk SiriBersih), teknisi menunjukkan air hasil sedotan, jika Cuci: kering 3–4 jam, jika total sementara: total final dikirim di chat untuk disetujui, pembayaran (hari H atau invoice Finance H+1, transfer/VA, tanpa DP), pengingat H-1.
+- Bahasa: sapa "Kak", pakai "kamu" (bukan "Anda"), sopan, jelas. Kata terlarang: "premium", "estimasi" (untuk harga), "bolak-balik". Total WO yang disetujui = harga final.`;
+
+const WO_FMT = `*WORK ORDER HYDROCLEAN*
+No: HC-YYMMDD-XXXX
+Sumber: ig-ctwa
+[Nama] · [08xx-xxxx-xxxx]
+[Alamat], [Kecamatan], [Kota]
+Lokasi: [link Google Maps] ATAU pencarian dari alamat (belum titik pasti)
+Jadwal: [Hari, tanggal], [Pagi/Siang/Sore/Fleksibel] (final dikonfirmasi SC)
+
+*PESANAN*
+*[Kategori]*
+• [Item (ukuran)] · [Layanan] · [jumlah bila >1] · Rp[subtotal]
+
+*Total: Rp[total]*
+Harga sudah termasuk PPN.
+
+*Persetujuan klien*
+[✓] Saya sudah membaca dan menyetujui Syarat & Ketentuan, serta menyetujui work order ini termasuk item, ukuran, layanan, dan total harganya.
+Disetujui oleh: [Nama] · [tanggal jam]`;
+
+/* ---------- Skenario ---------- */
+const SCEN = [
+ {id:"rina", nama:"Ibu Rina", label:"Info dari iklan IG", lv:1, kota:"Jakarta Selatan", refs:["R1","Alur C"],
+  buka:"Halo, saya lihat iklan HydroClean di IG. Ini jasa apa ya?",
+  persona:"Ibu muda, 34 tahun, ramah, cukup melek teknologi, sibuk. Anak 5 tahun sering bersin pagi hari (alergi debu).",
+  fakta:"Punya kasur Queen 1,6x2 m di kamar anak dan sofa 3 seat. Tidak ada noda. Tinggal di Kebayoran Baru, Jakarta Selatan. Mau jadwal minggu depan pagi.",
+  perilaku:"Jika SC menjelaskan dengan jelas dan memberi link, kamu tanya 1 hal (misal beda vakum dan cuci, atau aman untuk anak), lalu 'mengisi kalkulator' dan mengirim work order (kasur Queen + sofa 3 seat, layanan sesuai rekomendasi SC; jika SC tidak merekomendasikan apa pun pilih HydroClean). Setelah SC mengirim konfirmasi jadwal yang jelas, balas 'Oke makasih ya' dan akhiri.",
+  uji:["R1 lengkap dalam satu bubble (penjelasan, rekomendasi Cuci Higienis karena alergi/keringat, link, satu pertanyaan)","Menjawab pertanyaan secara akurat","Konfirmasi WO dengan Template C lengkap","Tidak membalas 'Oke makasih' dengan bubble basa-basi"]},
+ {id:"budi", nama:"Pak Budi", label:"Tanya harga dulu", lv:2, kota:"Kota Bekasi", refs:["R2","Keberatan"],
+  buka:"Berapa harga cuci kasur king?",
+  persona:"Bapak 45 tahun, to the point, agak skeptis soal harga, membandingkan dengan jasa lain.",
+  fakta:"Kasur King 1,8x2 m, sudah 3 tahun belum pernah dicuci, ada bau keringat, tidak ada noda. Tinggal di Bekasi Selatan (Kota Bekasi).",
+  perilaku:"Jika SC hanya memberi link tanpa angka, minta 'sebut aja kisaran harganya'. Setelah tahu harga Cuci Higienis, bilang 'mahal juga, bisa diskon gak? tempat lain 500 ribuan'. Jika SC menjelaskan nilai layanan tanpa memberi diskon dan menawarkan pilihan yang sesuai, kamu boleh setuju dan bilang akan isi kalkulator lalu kirim WO. Jika SC memberi diskon atau mengarang harga, terima saja (penilai yang akan menilai).",
+  uji:["R2: arahkan ke kalkulator + satu pertanyaan","Harga yang disebut sesuai daftar harga (King Higienis Rp1.085.000, HydroClean Rp410.000)","Rekomendasi Cuci Higienis karena bau keringat","Keberatan: tanpa diskon, jelaskan nilai, tawarkan opsi HydroClean bila perlu","Tidak memakai kata 'estimasi' untuk harga"]},
+ {id:"sinta", nama:"Mbak Sinta", label:"Foto noda ompol", lv:2, kota:"Tangerang Selatan", refs:["R3","R6"],
+  buka:"Kak, ini kasur anakku kena ompol, ada noda kuning gitu (foto terlampir). Bisa hilang gak ya?",
+  persona:"Ibu 29 tahun, cemas, banyak bertanya, bahasa santai.",
+  fakta:"Kasur Single 1,2x2 m, noda ompol kekuningan sedang. Tinggal di Pamulang, Tangerang Selatan. Anak harus bisa tidur di kasur itu malamnya.",
+  perilaku:"Tanyakan apakah noda pasti hilang 100% dan berapa lama keringnya (anak tidur jam 8 malam). Jika SC jujur (hingga 90%, kering 3–4 jam) dan menyarankan jadwal pagi, kamu puas lalu kirim WO kasur Single 1,2 Cuci Noda jadwal pagi. Setelah konfirmasi jadwal, akhiri.",
+  uji:["R3: Cuci Noda untuk ompol, jujur 'hingga 90%' (bukan 100%)","Waktu kering 3–4 jam dan saran jadwal pagi","Link kalkulator","Template C menyebut waktu kering dan hal penting lain"]},
+ {id:"dewi", nama:"Ibu Dewi", label:"Kabupaten Bekasi mau Cuci Noda", lv:3, kota:"Tambun, Kabupaten Bekasi", refs:["R4","R12"],
+  buka:"Halo kak, sofa saya ketumpahan kopi. Mau yang cuci noda ya, saya di Tambun.",
+  persona:"Ibu 40 tahun, sopan, tidak paham pembagian area.",
+  fakta:"Sofa 3 seat bahan kain biasa, noda kopi. Tambun termasuk Kabupaten Bekasi.",
+  perilaku:"Jika SC menawarkan Cuci Noda tanpa menjelaskan area, terima dan bilang mau pesan. Jika SC jujur bahwa Cuci Noda belum tersedia di Kabupaten Bekasi dan HydroClean tidak menghilangkan noda, tanyakan 'jadi gimana dong?' lalu pertimbangkan HydroClean saja; kamu boleh setuju HydroClean atau bilang pikir-pikir dulu.",
+  uji:["Mengenali Tambun = Kabupaten Bekasi, di luar area SiriBersih","Jujur bahwa HydroClean tidak menghilangkan noda","Menawarkan HydroClean tanpa menjanjikan noda hilang","Tidak menjual layanan yang tidak tersedia"]},
+ {id:"andre", nama:"Pak Andre", label:"Kota belum tersedia", lv:1, kota:"Yogyakarta", refs:["R5"],
+  buka:"Siang kak, HydroClean ada di Jogja gak?",
+  persona:"Bapak 38 tahun, singkat.",
+  fakta:"Tinggal di Sleman, Yogyakarta. Punya rumah orang tua di Depok.",
+  perilaku:"Jika SC bilang belum tersedia dan menyebut kota yang tersedia, sebutkan bahwa orang tuamu di Depok, tanyakan apakah bisa untuk rumah di Depok. Jika SC membantu dengan link/arah yang benar, terima kasih lalu akhiri ('oke nanti saya kabari ortu').",
+  uji:["R5: jujur belum tersedia, sebut kota yang tersedia","Menangkap peluang rumah orang tua di Depok (link kalkulator)","Sopan, tanpa memaksa"]},
+ {id:"sarah", nama:"Sarah", label:"Klien bahasa Inggris", lv:2, kota:"Jakarta Selatan", refs:["R10","R1"],
+  buka:"Hi, I saw your ad. Do you clean mattresses for dust mites? I have allergies.",
+  persona:"Expat, 36, polite, only speaks English.",
+  fakta:"King mattress and 2 pillows, lives in Kemang, Jakarta Selatan. Wants a weekend slot.",
+  perilaku:"Write ONLY in English. Ask whether chemicals are used (you are sensitive to fragrances). If the SC answers in clear English with the calculator link, say you will book and send a work order for King mattress (service as recommended) plus 2 pillows HydroClean. After schedule confirmation, end with 'Great, thanks!'.",
+  uji:["R10: reply in English","Accurate: HydroClean no chemicals; SiriBersih washing uses cleaning liquid","Recommends washing (Cuci Higienis) for sweat while respecting fragrance concern","Calculator link, one question"]},
+ {id:"tini", nama:"Oma Tini", label:"Tidak bisa isi kalkulator", lv:2, kota:"Depok", refs:["R7"],
+  buka:"Selamat sore nak. Oma dapat nomor ini dari cucu. Mau bersihkan kasur sama sofa.",
+  persona:"Nenek 68 tahun, ramah, tidak paham link dan aplikasi, mengetik pelan dan pendek.",
+  fakta:"Kasur Queen 1,6x2 m dan sofa 2 seat, tidak ada noda, banyak debu. Alamat Jl. Margonda Raya Gg. Mawar No. 12, Beji, Depok. Nama Sutini, WA 0812-7781-2093. Mau hari Sabtu pagi.",
+  perilaku:"Jika SC mengirim link, bilang 'oma gak bisa buka link nak, tolong diisikan saja'. Jika SC meminta data, berikan data sedikit-sedikit hanya yang ditanya. Jika SC mengirim teks work order dan link S&K, balas 'Saya setuju'. Setelah SC konfirmasi jadwal, ucapkan terima kasih dan akhiri.",
+  uji:["R7: minta semua data dalam SATU bubble","SC isikan WO (item, layanan, harga benar) + link S&K, minta 'Saya setuju'","Sabar, bahasa sederhana","Konfirmasi jadwal yang jelas"]},
+ {id:"hendra", nama:"Pak Hendra", label:"Nanti dulu, tanya istri", lv:1, kota:"Jakarta Barat", refs:["R1","R9"],
+  buka:"Mau info cuci sofa L dong.",
+  persona:"Bapak 42 tahun, ramah tapi belum memutuskan.",
+  fakta:"Sofa L 5 seat termasuk sudut, ada beberapa noda makanan. Tinggal di Kebon Jeruk.",
+  perilaku:"Setelah SC memberi info dan link, tanya hitungan seat sofa L. Setelah itu bilang 'oke nanti dulu ya, saya tanya istri'. Jika SC menyepakati waktu menghubungi lagi tanpa memaksa, setujui waktunya lalu akhiri. Jika SC memaksa atau mengirim banyak bubble, akhiri dengan 'nanti saya kabari'.",
+  uji:["R1 + rekomendasi sesuai noda (Cuci Noda)","Hitung sofa L: 5 seat (sudut dihitung 1 seat)","R9: tanpa tekanan, sepakati waktu, link tetap berlaku","Hemat bubble"]},
+ {id:"maya", nama:"Bu Maya", label:"Noda darah, sofa beludru", lv:3, kota:"Jakarta Pusat", refs:["R3","Keberatan"],
+  buka:"Sofa beludru saya kena darah mimisan anak. Bisa sampai bersih total kan? Saya mau yang paling bagus.",
+  persona:"Ibu 50 tahun, tegas, ekspektasi tinggi.",
+  fakta:"Sofa 3 seat beludru, noda darah sudah 1 minggu. Tinggal di Menteng.",
+  perilaku:"Desak SC untuk menjamin bersih total. Jika SC jujur (beludru tidak bisa dicuci SiriBersih, noda darah tidak bisa dihilangkan) dan menawarkan HydroClean untuk debu/tungau, kamu kecewa tapi menghargai kejujuran; boleh pesan HydroClean saja atau tidak jadi. Jika SC menjanjikan bersih total, terima (penilai yang menilai).",
+  uji:["Jujur: SiriBersih tidak mengerjakan beludru","Jujur: noda darah tidak bisa dihilangkan","Tidak menjanjikan hasil yang tidak bisa","Tetap menawarkan solusi yang tersedia (HydroClean)","Tidak memakai kata 'premium'"]},
+ {id:"rudi", nama:"Pak Rudi", label:"WO masuk tapi bermasalah", lv:3, kota:"Cikupa, Kabupaten Tangerang", refs:["Alur C","R12"],
+  buka:`*WORK ORDER HYDROCLEAN*
+No: HC-261007-K7RD
+Sumber: ig-ctwa
+Rudi Hartono · 0812-3456-7781
+Perumahan Citra Raya Blok F2 No. 8, Cikupa, Tangerang Kota
+Lokasi: pencarian dari alamat (belum titik pasti)
+Jadwal: Sabtu, 10 Okt 2026, Fleksibel (final dikonfirmasi SC)
+
+*PESANAN*
+*Kursi & Sofa*
+• Sofa · 3 seat · Cuci Noda · Rp1.680.000
+*Divan, Headboard, Kasur Lipat*
+• Kasur Lipat Queen · HydroClean · Rp160.000
+
+*Total: Rp1.840.000*
+Harga sudah termasuk PPN.
+
+Catatan: kasur lipat tebalnya sekitar 15 cm
+
+*Persetujuan klien*
+[✓] Saya sudah membaca dan menyetujui Syarat & Ketentuan HydroClean x SiriBersih, serta menyetujui work order ini termasuk item, ukuran, layanan, dan total harganya.
+Disetujui oleh: Rudi Hartono · 7 Okt 2026 09.12`,
+  persona:"Bapak 47 tahun, ingin cepat beres, agak tidak sabar.",
+  fakta:"Rumah di Citra Raya, Cikupa, yang sebenarnya Kabupaten Tangerang (kamu memilih 'Tangerang Kota' karena tidak tahu bedanya). Sofa kain biasa, noda teh. Kasur lipat tebal 15 cm. Bisa Sabtu jam berapa saja.",
+  perilaku:"Kamu baru mengirim WO di atas. Jika SC menjelaskan masalah (area Cuci, kasur lipat 15 cm dihitung Kasur Queen, lokasi), tanya 'terus gimana biar tetap bisa Sabtu?'. Ikuti arahan SC yang jelas: kirim lokasi (tulis '[Share Location terkirim]'), jika SC mengirim ringkasan revisi dengan harga dan total, balas 'Saya setuju'. Jika SC menyuruh mengisi ulang kalkulator dari awal, mengeluh 'harus isi ulang semua kak?' lalu tetap ikuti. Jika SC langsung mengonfirmasi jadwal tanpa melihat masalah, terima saja. Akhiri setelah konfirmasi jadwal final.",
+  uji:["Alur C: cek area (Cikupa = Kabupaten Tangerang, Cuci tidak tersedia)","Kasur lipat 15 cm dihitung Kasur Queen","Minta Share Location (lokasi belum titik pasti)","Fleksibel: SC memilih slot dari timetable","Mengirim ringkasan revisi di chat (Sofa HydroClean Rp600.000 + Kasur Queen HydroClean Rp360.000 = Rp960.000), klien 'Saya setuju', lalu Template C lengkap"]},
+ {id:"lina", nama:"Ibu Lina", label:"WO masuk lancar", lv:1, kota:"Jakarta Selatan", refs:["Alur C","Template C"],
+  buka:`*WORK ORDER HYDROCLEAN*
+No: HC-261007-L1NA
+Sumber: ig-ctwa
+Lina Kusuma · 0813-2200-4518
+Jl. Kemang Timur Raya No. 21, Mampang Prapatan, Jakarta
+Lokasi: https://maps.app.goo.gl/kemang21
+Jadwal: Kamis, 15 Okt 2026, Pagi (final dikonfirmasi SC)
+
+*PESANAN*
+*Kasur*
+• Kasur King (1,8 x 2 m) · Cuci Higienis · Rp1.085.000
+*Baby Stuff & Others*
+• Bantal / Guling · HydroClean · 2 pcs · Rp60.000
+
+*Total: Rp1.145.000*
+Harga sudah termasuk PPN.
+
+*Persetujuan klien*
+[✓] Saya sudah membaca dan menyetujui Syarat & Ketentuan HydroClean x SiriBersih, serta menyetujui work order ini termasuk item, ukuran, layanan, dan total harganya.
+Disetujui oleh: Lina Kusuma · 7 Okt 2026 10.40`,
+  persona:"Ibu 37 tahun, efisien, tidak suka chat bertele-tele.",
+  fakta:"Semua data di WO benar. Ada di rumah Kamis pagi.",
+  perilaku:"Kamu baru mengirim WO di atas. Tunggu konfirmasi SC. Jika konfirmasi tidak menyebut cara bayar, tanyakan 'bayarnya gimana?'. Jika konfirmasi lengkap, balas 'Oke siap, makasih ya' lalu akhiri. Jika SC mengirim lebih dari satu bubble untuk konfirmasi, kamu sedikit terganggu.",
+  uji:["Template C dalam SATU bubble, lengkap (jadwal, ada di rumah, air, air hasil sedotan, kering 3–4 jam karena Cuci, pembayaran, pengingat H-1)","Tidak membalas 'Oke siap, makasih' dengan bubble tambahan","Hemat bubble"]},
+ {id:"yoga", nama:"Pak Yoga", label:"Ubah jadwal + tambah item", lv:2, kota:"Jakarta Timur", refs:["R11"],
+  buka:"Kak, WO HC-261005-Y0G4 yang Rabu 14 Okt bisa mundur ke Sabtu 17 Okt? Sekalian tambah sofa 3 seat ya, dicuci juga.",
+  persona:"Bapak 33 tahun, santai, sudah pernah pesan.",
+  fakta:"WO sebelumnya: Kasur Queen Cuci Higienis Rp870.000, Rabu 14 Okt pagi, sudah dikonfirmasi. Sofa 3 seat tidak ada noda. Tinggal di Rawamangun.",
+  perilaku:"Jika SC mengonfirmasi tanggal baru dan mengirim ringkasan revisi tambahan sofa di chat dengan harga yang benar, setujui ('Saya setuju') dan akhiri setelah konfirmasi. Tanya apakah harus bayar lebih untuk pindah jadwal.",
+  uji:["R11: ubah tanggal dikonfirmasi di chat (setelah cek timetable)","Tambah sofa lewat ringkasan revisi -R1 di chat, final setelah 'Saya setuju' (tidak menyuruh isi ulang kalkulator)","Harga sofa 3 seat Cuci Higienis Rp1.380.000, total baru Rp2.250.000","Tidak ada biaya pindah jadwal (hanya batal di hari-H saat tim di lokasi)"]},
+ {id:"acak", nama:"Klien acak", label:"Tipe dipilih Claude", lv:2, kota:"Acak", refs:["Semua"],
+  buka:null, persona:"", fakta:"", perilaku:"", uji:["Sesuai situasi yang muncul"]}
+];
+const LV = {1:"Mudah",2:"Sedang",3:"Sulit"};
+const HINT = {
+ "R1":"Satu bubble: sapa + nama, penjelasan HydroClean (tanpa bahan kimia), rekomendasi Cuci Higienis, link, satu pertanyaan.",
+ "R2":"Harga ada di kalkulator + link + satu pertanyaan. Jangan mengarang angka.",
+ "R3":"Noda → Cuci Noda (hingga 90%, kering 3–4 jam). Tanpa noda → Cuci Higienis. Jujur soal batasan.",
+ "R4":"Cuci hanya Jakarta, Kota Bekasi, Depok, Tangerang Kota, Tangsel.",
+ "R5":"Belum tersedia → sebut 11 kota, tutup sopan, tanpa memaksa.",
+ "R6":"Jawab singkat dan akurat, lalu arahkan ke kalkulator.",
+ "R7":"Minta semua data dalam satu bubble, isikan WO, kirim + link S&K, minta 'Saya setuju'.",
+ "R9":"Tanpa tekanan. Sepakati waktu menghubungi lagi.",
+ "R10":"Balas dalam bahasa Inggris, isi seperti R1.",
+ "R11":"Semua lewat chat. Tanggal: konfirmasi jadwal baru. Item/layanan: hitung di kalkulator, kirim ringkasan -R1, klien 'Saya setuju'.",
+ "R12":"Jelaskan masalah WO dalam satu bubble, kirim ringkasan revisi, minta 'Saya setuju'.",
+ "Alur C":"Cek: persetujuan, data & lokasi, area & layanan, item & total, slot timetable, lalu Template C.",
+ "Template C":"Jadwal, ada di rumah, air keran & buang air (+air panas SB), air hasil sedotan, kering 3–4 jam (Cuci), pembayaran, pengingat H-1.",
+ "Keberatan":"Tanpa diskon. Jelaskan nilai, cek ulang layanan per item.",
+ "Semua":"Kenali tipe klien, lalu pakai skrip yang sesuai."
+};
+const RUBRIC = [
+ ["akurasi","Akurasi info",25,"Harga, layanan, area, S&K"],
+ ["alur","Alur SOP",25,"Langkah yang tepat untuk situasi ini"],
+ ["konsultasi","Konsultasi & rekomendasi",15,"Sesuai kebutuhan, Higienis direkomendasikan, ekspektasi jujur"],
+ ["bubble","Hemat Bubble",15,"1 bubble per balasan, tanpa basa-basi, link di awal"],
+ ["closing","Keberatan & closing",10,"Tanpa diskon, langkah berikut jelas"],
+ ["bahasa","Bahasa & nada",10,"Kak/kamu, sopan, tanpa kata terlarang"]
+];
+
+
+/* ---------- Quiz bercabang (tanpa AI) ----------
+   Setiap langkah: pesan klien + 3 pilihan balasan SC. p = poin (maks 10), next = langkah berikutnya (null = selesai).
+   st = tahap alur (1 Balas & kenalkan, 2 Link kalkulator, 3 WO masuk, 4 Jadwal / selesai). */
+const QUIZ = [
+ {id:"q-rina", nama:"Ibu Rina", label:"Dari iklan sampai jadwal", lv:1, kota:"Jakarta Selatan", refs:["R1","R6","Template C"], start:"n1", nodes:{
+  n1:{st:1, k:"Halo, saya lihat iklan HydroClean di IG. Ini jasa apa ya?", o:[
+   {p:10, next:"n2", t:"Halo Kak, terima kasih sudah menghubungi HydroClean. Saya Nia, Service Consultant yang bantu kamu.\n\nHydroClean adalah jasa vakum debu dan tungau penyebab alergi di kasur, sofa, bantal, gorden, dan karpet. 100% kering, tanpa bahan kimia. Vakum tidak menghilangkan keringat, jadi kami merekomendasikan Cuci Higienis bersama SiriBersih (kering 3–4 jam). Ada noda? Pilih Cuci Noda.\n\nHarga dan pesanan bisa langsung kamu cek di Kalkulator HydroClean: [link kalkulator]\n\nBoleh info kota dan item yang mau dibersihkan?", fb:"Tepat: R1 lengkap dalam satu bubble (nama SC, penjelasan, rekomendasi, link, satu pertanyaan)."},
+   {p:4, next:"n2", t:"Halo kak 🙏\n\n(bubble 2) Baik kak saya jelaskan ya\n\n(bubble 3) HydroClean itu jasa vakum debu dan tungau. Ini linknya: [link kalkulator]", fb:"Isinya benar tapi dipecah jadi 3 bubble dan ada basa-basi. Satu balasan = satu bubble."},
+   {p:1, next:"n1x", t:"Halo kak, HydroClean itu jasa cuci kasur. Mau cuci apa kak?", fb:"Salah: HydroClean bukan cuci, tapi vakum 100% kering. Tidak ada link kalkulator."}]},
+  n1x:{st:1, k:"Cuci? Berarti kasurnya basah ya? Anak saya alergi debu sih, sering bersin pagi.", o:[
+   {p:8, next:"n3", t:"Maaf Kak, saya luruskan: HydroClean itu vakum debu dan tungau, 100% kering dan tanpa bahan kimia. Karena vakum tidak menghilangkan keringat, untuk anak yang alergi kami merekomendasikan Cuci Higienis (HydroClean + cuci oleh SiriBersih, kering 3–4 jam). Harga dan pesanan: [link kalkulator]. Kasurnya ukuran apa, Kak?", fb:"Bagus: meluruskan info dengan jujur, rekomendasi sesuai kebutuhan, link."},
+   {p:2, next:"n3", t:"Iya kak dicuci, tapi cepat kering kok. Nanti saya kirim harganya ya.", fb:"Info tetap salah dan tidak ada link. Klien makin bingung."},
+   {p:4, next:"n3", t:"Tidak basah kak. Ini linknya ya: [link kalkulator]", fb:"Ada link, tapi tidak menjelaskan dan tidak memberi rekomendasi untuk alergi."}]},
+  n2:{st:2, k:"Kasur anak saya Queen, anaknya sering bersin pagi. Saya di Kebayoran Baru. Enaknya yang mana?", o:[
+   {p:10, next:"n3", t:"Untuk anak yang sering bersin, rekomendasi kami Cuci Higienis, Kak: HydroClean mengangkat debu dan tungau, lalu dicuci SiriBersih supaya keringat ikut terangkat. Kering sekitar 3–4 jam. Kebayoran Baru sudah termasuk area. Pilih Kasur Queen · Cuci Higienis di kalkulator: [link kalkulator]", fb:"Tepat: rekomendasi Cuci Higienis sesuai kebutuhan, area dicek, link."},
+   {p:5, next:"n3", t:"HydroClean saja cukup kak, Rp360.000.", fb:"Harga benar, tapi melewatkan rekomendasi Cuci Higienis yang paling pas untuk alergi dan keringat."},
+   {p:1, next:"n3", t:"Ambil Cuci Noda kak, biar paling bersih. Rp1.080.000.", fb:"Tidak ada noda, jadi Cuci Noda tidak sesuai kebutuhan. Jangan mendorong layanan yang tidak dibutuhkan."}]},
+  n3:{st:2, k:"Bedanya vakum sama cuci apa kak? Aman buat anak kan?", o:[
+   {p:10, next:"n4", t:"HydroClean itu vakum, 100% kering dan tanpa bahan kimia, mengangkat debu dan tungau. Cuci Higienis sudah termasuk HydroClean, lalu permukaannya dicuci SiriBersih dengan cairan pembersih untuk mengangkat keringat, kering 3–4 jam. Kalau sudah cocok, langsung isi di kalkulator ya, Kak.", fb:"Tepat: akurat (HydroClean tanpa kimia, SiriBersih pakai cairan pembersih) dan mengarahkan kembali ke kalkulator."},
+   {p:2, next:"n4", t:"Sama saja kak, dua-duanya pakai bahan kimia yang aman.", fb:"Salah: HydroClean tidak memakai bahan kimia sama sekali, dan vakum berbeda dengan cuci."},
+   {p:6, next:"n4", t:"HydroClean itu vakum kak.\n\n(bubble 2) Kalau cuci ada airnya.\n\n(bubble 3) Aman kok kak.", fb:"Arahnya benar tapi kurang lengkap dan dipecah jadi 3 bubble."}]},
+  n4:{st:3, k:"*WORK ORDER HYDROCLEAN*\nNo: HC-261007-R1NA\nRina Puspita · 0812-9001-2234\nJl. Senopati No. 45, Kebayoran Baru, Jakarta\nLokasi: https://maps.app.goo.gl/senopati45\nJadwal: Senin, 12 Okt 2026, Fleksibel (final dikonfirmasi SC)\n\n*PESANAN*\n*Kasur*\n• Kasur Queen (1,6 x 2 m) · Cuci Higienis · Rp870.000\n\n*Total: Rp870.000*\n[✓] Disetujui oleh: Rina Puspita · 7 Okt 2026 14.05", o:[
+   {p:10, next:"n5", t:"Terima kasih Kak Rina, work order HC-261007-R1NA sudah kami terima. Jadwalnya kami kunci: Senin, 12 Oktober, pukul 09.00.\n\nTim kami akan cek kondisi kasur bersamamu sebelum dan setelah pengerjaan, jadi mohon ada di rumah ya. Mohon siapkan akses air keran, tempat buang air kotor, dan air panas untuk SiriBersih. Setelah dicuci, kasur butuh sekitar 3–4 jam untuk kering.\n\nPembayaran di hari pengerjaan atau setelah invoice dari tim Finance (H+1), lewat transfer ke rekening resmi atau Virtual Account. Pengingat kami kirim H-1.", fb:"Tepat: cek WO lengkap, slot Fleksibel dipilih SC dari timetable, Template C lengkap dalam satu bubble."},
+   {p:4, next:"n5", t:"Siap kak, WO sudah diterima ya 🙏 Nanti dikabari jadwalnya.", fb:"Belum ada jadwal final dan info penting (ada di rumah, air, waktu kering, pembayaran). Klien harus menunggu lagi."},
+   {p:2, next:"n5", t:"Kak, jadwalnya Fleksibel ya? Mau tanggal berapa dan jam berapa? Alamatnya di mana?", fb:"Semua data sudah ada di WO. Fleksibel berarti SC yang memilih slot dari timetable, bukan bertanya ulang."}]},
+  n5:{st:4, k:"Oke makasih ya kak.", o:[
+   {p:10, next:null, t:"(Tidak membalas. Percakapan selesai.)", fb:"Tepat: setelah Template C, \"OK/makasih\" tidak perlu dibalas. Hemat satu bubble."},
+   {p:4, next:null, t:"Sama-sama Kak, ditunggu ya 🙏", fb:"Bubble basa-basi yang tidak perlu (berbayar ±Rp396 di luar 72 jam CTWA)."},
+   {p:2, next:null, t:"Sama-sama kak. Jangan lupa follow IG kami dan kasih review ya!", fb:"Bubble tambahan berisi promo. Tidak perlu di tahap ini."}]}
+ }},
+ {id:"q-budi", nama:"Pak Budi", label:"Tanya harga dan minta diskon", lv:2, kota:"Kota Bekasi", refs:["R2","Keberatan"], start:"n1", nodes:{
+  n1:{st:1, k:"Berapa harga cuci kasur king?", o:[
+   {p:10, next:"n2", t:"Halo Pak, terima kasih sudah menghubungi HydroClean. Untuk Kasur King: Cuci Higienis Rp1.085.000, HydroClean (vakum saja) Rp410.000, sudah termasuk PPN dan vakum 4 bantal/guling. Detail dan pesanan di kalkulator: [link kalkulator]\n\nKasurnya ada noda atau bau keringat, Pak? Saya bantu pilihkan.", fb:"Tepat: harga sesuai kalkulator, link, satu pertanyaan untuk konsultasi."},
+   {p:3, next:"n2", t:"Estimasi sekitar 1 jutaan pak.", fb:"Kata \"estimasi\" dilarang dan harganya kabur. Tidak ada link."},
+   {p:5, next:"n2", t:"Cek di sini pak: [link kalkulator]", fb:"Ada link, tapi terlalu tipis: tidak ada sapaan, penjelasan, atau pertanyaan."}]},
+  n2:{st:2, k:"Udah 3 tahun gak dicuci, bau keringat. Tapi mahal juga ya 1 juta. Bisa diskon gak? Tempat lain 500an.", o:[
+   {p:10, next:"n3", t:"Kami tidak memakai diskon, Pak, supaya harga sama untuk semua klien. Untuk bau keringat, Cuci Higienis yang pas: debu dan tungau divakum, lalu dicuci supaya keringat terangkat. Harganya sudah termasuk 4 bantal/guling, tanpa biaya transport, dan total di work order adalah harga final. Kalau mau yang lebih ringan, HydroClean saja Rp410.000, tapi bau keringat tidak hilang dengan vakum.", fb:"Tepat: tanpa diskon, jelaskan nilai, beri pilihan jujur."},
+   {p:0, next:"n3", t:"Bisa pak, khusus hari ini saya kasih 10%.", fb:"Salah: tidak ada diskon. SC tidak boleh memberi potongan sendiri."},
+   {p:4, next:"n3", t:"Maaf pak, tidak bisa diskon.", fb:"Benar soal diskon, tapi tidak menjelaskan nilai atau pilihan. Peluang closing hilang."}]},
+  n3:{st:2, k:"Ya udah deh yang cuci. Bisa tanggal berapa?", o:[
+   {p:10, next:null, t:"Siap, Pak. Isi tanggal dan waktu yang Bapak mau langsung di kalkulator: [link kalkulator]. Setelah work order masuk, saya cek timetable tim dan kunci slotnya.", fb:"Tepat: arahkan ke kalkulator, jadwal final dikonfirmasi setelah WO masuk."},
+   {p:4, next:null, t:"Kapan saja bisa pak.", fb:"Menjanjikan jadwal tanpa cek timetable. Belum ada WO."},
+   {p:3, next:null, t:"Nama bapak siapa?\n\n(bubble 2) Alamatnya?\n\n(bubble 3) Mau tanggal berapa?", fb:"Data ditanya satu per satu, boros bubble. Kalkulator sudah meminta semua data."}]}
+ }},
+ {id:"q-dewi", nama:"Ibu Dewi", label:"Tambun minta Cuci Noda", lv:3, kota:"Tambun, Kabupaten Bekasi", refs:["R4","R3"], start:"n1", nodes:{
+  n1:{st:1, k:"Halo kak, sofa 3 seat saya ketumpahan kopi. Mau yang cuci noda ya, saya di Tambun.", o:[
+   {p:10, next:"n2", t:"Halo Kak, terima kasih sudah menghubungi HydroClean. Saya Nia. Tambun termasuk Kabupaten Bekasi, dan Cuci Noda (SiriBersih) saat ini belum tersedia di sana. Yang tersedia HydroClean: vakum debu dan tungau, 100% kering, tapi tidak menghilangkan noda. Harga dan pesanan: [link kalkulator]", fb:"Tepat: mengenali area, jujur soal layanan dan hasil, tetap memberi pilihan."},
+   {p:0, next:"n2", t:"Bisa kak, Cuci Noda sofa 3 seat Rp1.680.000. Ini linknya: [link kalkulator]", fb:"Salah: Cuci Noda tidak tersedia di Kabupaten Bekasi. Menjual layanan yang tidak bisa dikerjakan."},
+   {p:4, next:"n2", t:"Maaf kak, tidak bisa.", fb:"Benar soal Cuci Noda, tapi menutup tanpa alternatif."}]},
+  n2:{st:2, k:"Jadi gimana dong kak? Kalau HydroClean aja nodanya hilang gak?", o:[
+   {p:10, next:"n3", t:"Jujur, Kak, HydroClean tidak menghilangkan noda kopi karena prosesnya vakum kering. Yang terangkat debu dan tungau di dalam sofa. Kalau tetap mau dirawat, pilih Kota: Kabupaten Bekasi, Sofa · HydroClean · 3 seat di kalkulator.", fb:"Tepat: ekspektasi jujur, arahan jelas."},
+   {p:0, next:"n3", t:"Hilang kok kak, vakum kami kuat.", fb:"Salah dan berbahaya: menjanjikan hasil yang tidak bisa. Ini sumber komplain."},
+   {p:4, next:"n3", t:"Kurang tahu kak.", fb:"SC harus tahu batasan layanan. Jawab jujur dan jelas."}]},
+  n3:{st:2, k:"Oke deh HydroClean aja. Harganya berapa?", o:[
+   {p:10, next:null, t:"Sofa HydroClean Rp200.000 per seat, jadi 3 seat Rp600.000, sudah termasuk PPN dan tanpa biaya transport. Isi di kalkulator lalu kirim work order ke chat ini ya, Kak: [link kalkulator]", fb:"Tepat: harga per seat dihitung benar, link."},
+   {p:3, next:null, t:"Rp200.000 kak.", fb:"Kurang: Rp200.000 itu per seat. Untuk 3 seat totalnya Rp600.000."},
+   {p:2, next:null, t:"Sekitar 500 ribuan kak, nanti dihitung di lokasi.", fb:"Salah: sofa dihitung per seat dari awal, bukan di lokasi. Harga juga tidak tepat."}]}
+ }},
+ {id:"q-rudi", nama:"Pak Rudi", label:"WO masuk tapi bermasalah", lv:3, kota:"Cikupa, Kabupaten Tangerang", refs:["Alur C","R12"], start:"n1", nodes:{
+  n1:{st:3, k:"*WORK ORDER HYDROCLEAN*\nNo: HC-261007-K7RD\nRudi Hartono · 0812-3456-7781\nPerumahan Citra Raya Blok F2 No. 8, Cikupa, Tangerang Kota\nLokasi: pencarian dari alamat (belum titik pasti)\nJadwal: Sabtu, 10 Okt 2026, Fleksibel\n\n*PESANAN*\n• Sofa · 3 seat · Cuci Noda · Rp1.680.000\n• Kasur Lipat Queen · HydroClean · Rp160.000\n*Total: Rp1.840.000*\nCatatan: kasur lipat tebalnya sekitar 15 cm\n[✓] Disetujui oleh: Rudi Hartono · 7 Okt 2026 09.12", o:[
+   {p:10, next:"n2", t:"Terima kasih Pak Rudi, WO sudah kami terima. Ada 3 hal yang perlu disesuaikan:\n1. Cikupa termasuk Kabupaten Tangerang, Cuci Noda belum tersedia di sana. Untuk sofa yang tersedia HydroClean (tidak menghilangkan noda).\n2. Kasur lipat lebih dari 10 cm dihitung sebagai Kasur Queen.\n3. Lokasi belum titik pasti, mohon kirim Share Location.\nRevisinya saya bantu di chat ini ya, Pak.", fb:"Tepat: Alur C, semua masalah dijelaskan dalam satu bubble, revisi dibantu di chat."},
+   {p:0, next:"n1x", t:"Terima kasih Pak, jadwal Sabtu 10 Oktober pukul 09.00 sudah kami kunci. Pengingat kami kirim H-1.", fb:"Salah: langsung konfirmasi tanpa cek area, ukuran kasur lipat, dan lokasi."},
+   {p:5, next:"n2", t:"Pak, Cikupa itu Kabupaten Tangerang.\n\n(bubble 2) Cuci Noda belum tersedia.\n\n(bubble 3) Kasur lipat 15 cm dihitung kasur.\n\n(bubble 4) Kirim share location ya pak.", fb:"Isi benar, tapi dipecah 4 bubble. Satu balasan = satu bubble."}]},
+  n1x:{st:3, k:"Oke sip. Oh iya rumah saya di Citra Raya, Cikupa ya kak.", o:[
+   {p:6, next:"n2", t:"Maaf Pak, saya koreksi: Cikupa termasuk Kabupaten Tangerang, jadi Cuci Noda belum tersedia, dan kasur lipat 15 cm dihitung sebagai Kasur Queen. Revisinya saya kirim di sini, dan mohon kirim Share Location. Jadwal Sabtu tetap saya pegang.", fb:"Bagus: mengoreksi dengan jujur. Lebih baik lagi jika dicek sejak WO masuk."},
+   {p:0, next:"n2", t:"Siap pak.", fb:"Masalah dibiarkan. Tim akan datang dengan layanan yang tidak bisa dikerjakan."},
+   {p:3, next:"n2", t:"Nanti dicek di lokasi saja pak.", fb:"Masalah area dan harga harus beres sebelum jadwal, bukan di lokasi."}]},
+  n2:{st:3, k:"Terus gimana biar tetap bisa Sabtu?", o:[
+   {p:10, next:"n3", t:"Bisa, Pak. Revisi HC-261007-K7RD-R1:\n• Sofa 3 seat · HydroClean · Rp600.000\n• Kasur Queen (kasur lipat 15 cm) · HydroClean · Rp360.000\nTotal baru Rp960.000 (selisih -Rp880.000). Slot Sabtu saya pegang. Kalau setuju, balas \"Saya setuju\" dan kirim Share Location ya.", fb:"Tepat: revisi dikirim di chat dengan harga dari kalkulator, klien tinggal setuju, jadwal tetap dijaga."},
+   {p:4, next:"n3", t:"Nanti saya ubah sendiri ordernya ya pak.", fb:"Perubahan harga harus dikirim ke klien dan disetujui (\"Saya setuju\"), bukan diubah SC sepihak."},
+   {p:1, next:"n3", t:"Tetap Cuci Noda aja pak, nanti saya atur timnya.", fb:"Salah: Cuci Noda tidak tersedia di Kabupaten Tangerang."}]},
+  n3:{st:4, k:"Saya setuju. (Share Location: Citra Raya Blok F2 No. 8)", o:[
+   {p:10, next:null, t:"Terima kasih Pak Rudi, revisi HC-261007-K7RD-R1 sudah disetujui. Jadwal kami kunci: Sabtu, 10 Oktober, pukul 09.00.\n\nTim kami akan cek kondisi item bersama Bapak sebelum dan setelah pengerjaan, jadi mohon ada di rumah. Mohon siapkan akses air keran dan tempat buang air kotor. Pembayaran di hari pengerjaan atau setelah invoice Finance (H+1), transfer ke rekening resmi atau Virtual Account. Pengingat kami kirim H-1.", fb:"Tepat: Template C sesuai pesanan HydroClean saja (tanpa air panas dan waktu kering)."},
+   {p:5, next:null, t:"Terima kasih Pak, jadwal Sabtu 09.00 sudah dikunci. Mohon siapkan air panas untuk SiriBersih ya, dan setelah dicuci butuh 3–4 jam untuk kering.", fb:"Kurang tepat: pesanan hanya HydroClean, jadi tidak ada air panas atau waktu kering. Info pembayaran juga belum ada."},
+   {p:3, next:null, t:"Sabtu mau jam berapa pak?", fb:"Fleksibel berarti SC memilih slot dari timetable, lalu langsung konfirmasi."}]}
+ }},
+ {id:"q-tini", nama:"Oma Tini", label:"Tidak bisa isi kalkulator", lv:2, kota:"Depok", refs:["R7","Template C"], start:"n1", nodes:{
+  n1:{st:1, k:"Selamat sore nak. Oma mau bersihkan kasur sama sofa. Oma gak ngerti link-link.", o:[
+   {p:10, next:"n2", t:"Selamat sore, Oma. Saya Nia dari HydroClean, saya bantu isikan ya. Boleh kirim sekalian: nama lengkap, alamat lengkap, ukuran kasur, jumlah dudukan sofa, ada noda atau tidak, dan hari serta jam yang Oma mau.", fb:"Tepat: R7, semua data diminta dalam satu bubble dengan bahasa sederhana."},
+   {p:3, next:"n2", t:"Bisa lewat link ini Oma: [link kalkulator]", fb:"Klien sudah bilang tidak bisa memakai link. Bantu isikan (R7)."},
+   {p:5, next:"n2", t:"Baik Oma. Nama lengkapnya siapa?", fb:"Arah benar, tapi data ditanya satu per satu. Boros bubble."}]},
+  n2:{st:2, k:"Sutini, Jl Margonda Raya Gg Mawar 12, Beji, Depok. Kasur queen, sofa 2 dudukan. Tidak ada noda, debu saja. Sabtu pagi.", o:[
+   {p:10, next:"n3", t:"Terima kasih, Oma. Untuk debu dan keringat, rekomendasi kami Cuci Higienis. Ini work order-nya:\n• Kasur Queen · Cuci Higienis · Rp870.000\n• Sofa 2 seat · Cuci Higienis · Rp920.000\nTotal Rp1.790.000, sudah termasuk PPN.\nSyarat & ketentuan: [link S&K]\nKalau sesuai, balas \"Saya setuju\" ya, Oma. Mohon kirim juga lokasi rumah lewat Share Location.", fb:"Tepat: rekomendasi, harga dari kalkulator benar, minta persetujuan dan lokasi."},
+   {p:3, next:"n3", t:"Ini ordernya Oma: Kasur Queen Cuci Higienis Rp870.000, Sofa 2 seat Cuci Higienis Rp460.000. Total Rp1.330.000.", fb:"Salah hitung: sofa Rp460.000 per seat, jadi 2 seat Rp920.000. Belum minta persetujuan."},
+   {p:5, next:"n3", t:"Siap Oma, sudah saya catat. Nanti tim datang Sabtu pagi ya.", fb:"Tidak ada work order, total, atau persetujuan klien. Belum boleh dijadwalkan."}]},
+  n3:{st:4, k:"Saya setuju nak. [Share Location terkirim]", o:[
+   {p:10, next:null, t:"Terima kasih, Oma Tini. Jadwalnya kami kunci: Sabtu, 10 Oktober, pukul 09.00. Tim kami akan cek kasur dan sofa bersama Oma sebelum dan sesudah dikerjakan, jadi mohon Oma ada di rumah. Mohon siapkan air keran, tempat buang air kotor, dan air panas. Setelah dicuci perlu 3–4 jam untuk kering. Bayarnya di hari itu atau setelah tagihan dari tim Finance, lewat transfer. Sehari sebelumnya kami ingatkan lagi.", fb:"Tepat: Template C lengkap dengan bahasa sederhana."},
+   {p:4, next:null, t:"Siap Oma, terima kasih 🙏", fb:"Belum ada jadwal final dan info penting."},
+   {p:0, next:null, t:"Siap Oma. Mohon transfer DP 50% dulu ya supaya jadwalnya terkunci.", fb:"Salah: tidak ada DP."}]}
+ }}
+];
+const STAGES = ["Balas & kenalkan","Link kalkulator","WO masuk & dicek","Jadwal dikonfirmasi"];
+
+
+/* ---------- Peran Scheduler ---------- */
+const SOP_SCH = `SOP CHAT SCHEDULER v1 (ringkas):
+- Klien datang dari iklan link → Kalkulator HydroClean → WhatsApp Scheduler. Chat organik: setiap bubble Scheduler berbayar (±Rp396), TIDAK ada 72 jam gratis. Lewat 24 jam hanya bisa template berbayar.
+- Satu pintu: Scheduler melayani semua pertanyaan sampai jadwal terkunci. JANGAN mengoper klien ke nomor lain. Kasus berat (komplain, klaim, refund, harga khusus, item di luar kalkulator) ditanyakan internal ke leader/SPV/Finance, lalu Scheduler tetap yang membalas, paling lambat hari yang sama.
+- Satu balasan = satu bubble, lengkap. Tanpa bubble basa-basi ("baik/siap/ditunggu"). "OK/makasih" setelah konfirmasi tidak dibalas. Data yang sudah ada di WO jangan ditanya ulang.
+- Perkenalkan nama di balasan pertama: "saya [Nama] dari HydroClean".
+- REVISI HANYA LEWAT CHAT: kalkulator tidak punya tombol revisi dan data order tidak tersimpan di HP klien. Jangan menyuruh klien mengisi ulang kalkulator untuk mengubah order.
+- Cek WO 6 langkah: 1 persetujuan [✓] (kosong/teks diubah = minta klien balas "Saya setuju" di chat); 2 data & lokasi ("pencarian dari alamat" = minta Share Location di bubble konfirmasi); 3 area & layanan (Cuci hanya Jakarta, Kota Bekasi, Depok, Tangerang Kota, Tangerang Selatan; baca Catatan: bahan latex/beludru/bulu angsa/suede/parasut tidak dicuci SiriBersih; noda darah/tinta/jamur/lem/minyak/luntur tidak hilang); 4 item & total ("Total sementara" = item diukur di lokasi, total final dikirim di chat dan disetujui klien); 5 slot dari timetable (Fleksibel = Scheduler pilih slot kosong terbaik tanpa bertanya; slot penuh = tawarkan TEPAT 2 slot terdekat dalam 1 bubble; jangan overbooking); 6 kirim T1.
+- T1 Konfirmasi (1 bubble): nama Scheduler, nomor WO diterima, jadwal dikunci (hari, tanggal, jam), cek kondisi item bersama sebelum & setelah (mohon ada di rumah), akses air keran + buang air kotor (+ air panas untuk SiriBersih), teknisi menunjukkan air hasil vakum, jika Cuci: kering 3–4 jam, jika total sementara: total final dikirim di chat untuk disetujui, jika lokasi belum pasti: minta Share Location, pembayaran (hari H atau invoice Finance H+1, transfer rekening resmi/VA, tanpa DP), pengingat H-1.
+- T3 WO bermasalah: jelaskan jujur dalam 1 bubble, beri solusi (mis. HydroClean saja) dengan harga dari kalkulator, kirim ringkasan revisi, klien balas "Saya setuju".
+- Perubahan setelah WO (T4): ganti tanggal saja = cek timetable, konfirmasi jadwal baru, total tetap, tanpa biaya, lepas slot lama. Tambah/ubah item atau layanan = hitung di kalkulator, kirim ringkasan revisi -R1 dalam 1 bubble (item, total baru, selisih, jadwal), final setelah klien balas "Saya setuju".
+- Tanya kota dari kalkulator ("apakah layanan tersedia di kota saya?"): tanya kota + kecamatan, lalu link kalkulator atau tutup sopan jika tidak tersedia.
+- Pertanyaan tanpa WO: jawab singkat dan akurat + link kalkulator + satu pertanyaan. Rekomendasi Cuci Higienis (vakum tidak menghilangkan keringat), noda → Cuci Noda (hingga 90%).
+- Diskon: tidak ada; jelaskan nilai; boleh cek ulang layanan per item.
+- Tidak bisa isi kalkulator: minta semua data dalam 1 bubble, Scheduler isikan WO, klien balas "Saya setuju".
+- Ubah jadwal/batal: tanpa biaya; biaya Rp100.000 hanya jika batal di hari H saat tim sudah di lokasi. Tawarkan 2 slot, lepas slot lama.
+- Komplain/klaim: empati, minta foto/video + nomor WO/invoice, jujur (Cuci Noda hingga 90%), jangan janji refund atau cuci ulang, eskalasi internal, kabari hari ini. Klaim kerusakan maks. 1x24 jam setelah pengerjaan; keputusan + pembayaran klaim maks. 14 hari kerja setelah syarat lengkap.
+- Pembayaran/invoice: transfer ke rekening resmi atau VA sesuai invoice; detail tagihan boleh diarahkan ke WA Finance resmi.
+- WO bertanda "Bahasa klien: English": balas dalam bahasa Inggris.
+- Bahasa: "Kak" dan "kamu" (bukan "Anda"). Kata terlarang: "premium", "estimasi" (untuk harga), "bolak-balik". HydroClean tanpa bahan kimia; SiriBersih memakai cairan pembersih.`;
+
+const WO_FMT_SCH = WO_FMT.replace("Sumber: ig-ctwa", "Sumber: ig-kalk");
+
+const wo = (no, nama, wa, alamat, lokasi, jadwal, lines, total, opt = {}) =>
+  `*${opt.rev ? "REVISI WORK ORDER HYDROCLEAN" : "WORK ORDER HYDROCLEAN"}*\nNo: ${no}${opt.rev ? "\nMenggantikan: " + opt.rev : ""}\nSumber: ig-kalk${opt.en ? "\nBahasa klien: English (mohon balas dalam bahasa Inggris)" : ""}\n\n${nama} · ${wa}\n${alamat}\nLokasi: ${lokasi}\nJadwal: ${jadwal} (final dikonfirmasi SC)\n\n*PESANAN*\n${lines}\n\n*${opt.site ? "Total sementara" : "Total"}: Rp${total}*${opt.site ? "\n" + opt.site : ""}\nHarga sudah termasuk PPN.${opt.note ? "\n\nCatatan: " + opt.note : ""}\n\n*Persetujuan klien*\n[✓] Saya sudah membaca dan menyetujui Syarat & Ketentuan${opt.nosb ? "" : " HydroClean x SiriBersih"}, serta menyetujui work order ini termasuk item, ukuran, layanan, dan total harganya.\nDisetujui oleh: ${nama} · ${opt.at || "7 Okt 2026 20.15"}`;
+
+const WO_FAJAR = wo("HC-261007-F4JR", "Fajar Nugroho", "0813-2200-4411", "Jl. Kemuning No. 7, Beji, Depok", "pencarian dari alamat (belum titik pasti)", "Sabtu, 17 Okt 2026, Fleksibel", "*Kasur*\n• Kasur Queen (1,6 x 2 m) · Cuci Noda — Rp1.080.000", "1.080.000", {at: "7 Okt 2026 19.12"});
+const WO_NADIA = wo("HC-261007-N4D1", "Nadia Prameswari", "0812-6600-7781", "Jl. Elang Laut Blok C3 No. 9, Pondok Aren, Tangerang Selatan", "https://maps.app.goo.gl/elanglaut9", "Sabtu, 17 Okt 2026, Pagi", "*Sofa*\n• Sofa L 5 seat · Cuci Higienis · 5 seat — Rp2.300.000\n*Gorden & Karpet*\n• Gorden lipatan · HydroClean — dihitung di lokasi", "2.300.000", {site: "Gorden lipatan diukur di lokasi oleh tim HydroClean, ditambahkan lewat revisi work order.", at: "7 Okt 2026 21.02"});
+const WO_WULAN = wo("HC-261007-W8LN", "Wulandari", "0821-4455-6677", "Jl. Kebon Jeruk Raya No. 21, Kebon Jeruk, Jakarta Barat", "https://maps.app.goo.gl/kebonjeruk21", "Senin, 12 Okt 2026, Siang", "*Sofa*\n• Sofa 2 seat · Cuci Noda · 2 seat — Rp1.120.000", "1.120.000", {note: "Sofa bahan beludru, ada coretan pulpen anak.", at: "7 Okt 2026 18.40"});
+
+const SCEN_SCH = [
+ {id:"sch-laras", role:"sch", nama:"Ibu Laras", label:"WO lengkap, slot ada", lv:1, kota:"Jakarta Selatan", refs:["Cek WO","T1"],
+  buka: wo("HC-261007-L4R5", "Laras Wibowo", "0812-7788-1020", "Jl. Wijaya I No. 12, Kebayoran Baru, Jakarta Selatan", "https://maps.app.goo.gl/wijaya12", "Kamis, 15 Okt 2026, Pagi", "*Kasur*\n• Kasur King (1,8 x 2 m) · Cuci Higienis — Rp1.085.000\n*Sofa*\n• Sofa 3 seat · HydroClean · 3 seat — Rp600.000", "1.685.000"),
+  jadwal:"Kamis 15 Okt: Pagi 09.00 kosong (HydroClean + SiriBersih tersedia), Siang 13.00 kosong, Sore penuh.",
+  persona:"Ibu 36 tahun, pekerja kantoran, efisien, tidak suka ditanya ulang.",
+  fakta:"Semua data di WO benar. Bisa di rumah Kamis pagi. Kasur ada bau keringat, sofa hanya berdebu.",
+  perilaku:"Kamu baru mengirim WO dari kalkulator. Jika Scheduler bertanya ulang data yang sudah ada di WO (alamat, jadwal, item), jawab dengan sedikit kesal ('kan sudah ada di WO kak'). Jika konfirmasi tidak menyebut cara bayar, tanyakan 'bayarnya gimana kak?'. Jika konfirmasi lengkap, balas 'Oke makasih kak' lalu selesai_booking.",
+  uji:["T1 dalam satu bubble: Kamis 15 Okt pukul 09.00, ada di rumah, air keran + buang air + air panas SiriBersih, air hasil vakum, kasur kering 3–4 jam, pembayaran, H-1","Tidak bertanya ulang data WO","Tidak membalas 'Oke makasih'"]},
+ {id:"sch-fajar", role:"sch", nama:"Pak Fajar", label:"Lokasi belum pasti, Fleksibel", lv:2, kota:"Depok", refs:["Cek WO","T1"],
+  buka: WO_FAJAR,
+  jadwal:"Sabtu 17 Okt: Pagi penuh. Siang 13.00 kosong. Sore 15.30 kosong. SiriBersih tersedia Siang dan Sore.",
+  persona:"Bapak 41 tahun, santai, singkat.",
+  fakta:"Rumah di gang, sering salah titik di aplikasi ojek. Bisa kirim Share Location. Anaknya tidur di kasur itu malam harinya.",
+  perilaku:"Jika Scheduler bertanya mau jam berapa, jawab 'kan saya pilih fleksibel kak, terserah'. Jika Scheduler meminta Share Location, balas '(Share Location: Jl. Kemuning No. 7, Beji)'. Tanyakan 'malamnya kasur bisa dipakai kan?' jika belum disebut waktu kering. Selesai_booking setelah jadwal pasti dan lokasi terkirim.",
+  uji:["Fleksibel: Scheduler memilih slot dari timetable (Siang 13.00 atau Sore 15.30), tidak bertanya ulang","Meminta Share Location di bubble konfirmasi","Kasur kering 3–4 jam (Cuci Noda), air panas SiriBersih","Satu bubble"]},
+ {id:"sch-nadia", role:"sch", nama:"Ibu Nadia", label:"Slot penuh + total sementara", lv:2, kota:"Tangerang Selatan", refs:["T2","T1"],
+  buka: WO_NADIA,
+  jadwal:"Sabtu 17 Okt: SEMUA slot penuh. Minggu 18 Okt Pagi 09.00 kosong. Senin 19 Okt Siang 13.00 kosong. SiriBersih tersedia di kedua slot itu.",
+  persona:"Ibu 45 tahun, ramah, teliti soal biaya.",
+  fakta:"Lebih suka akhir pekan. Gorden ruang tamu 2 jendela, tidak tahu ukurannya.",
+  perilaku:"Jika ditawari 2 slot, pilih Minggu. Jika Scheduler bertanya terbuka 'mau kapan?', jawab 'kapan yang kosong kak?'. Tanyakan 'gordennya nanti bayar berapa?'. Jika Scheduler memaksakan Sabtu pagi yang penuh, terima saja (penilai yang menilai). Selesai_booking setelah konfirmasi lengkap.",
+  uji:["Tidak overbooking Sabtu","Tepat 2 pilihan slot dalam 1 bubble","Gorden lipatan Rp80.000/m², diukur di lokasi, total final dikirim di chat untuk disetujui","T1 lengkap untuk Minggu 18 Okt 09.00"]},
+ {id:"sch-wulan", role:"sch", nama:"Ibu Wulan", label:"Beludru + noda tinta", lv:3, kota:"Jakarta Barat", refs:["Cek WO","T3"],
+  buka: WO_WULAN,
+  jadwal:"Senin 12 Okt: Siang 13.00 kosong (HydroClean dan SiriBersih).",
+  persona:"Ibu 33 tahun, sopan, berharap noda hilang.",
+  fakta:"Sofa 2 seat beludru, coretan pulpen anak. Tidak tahu batasan bahan.",
+  perilaku:"Jika Scheduler langsung mengonfirmasi tanpa membahas beludru/tinta, terima dan selesai_booking (penilai yang menilai). Jika Scheduler jujur, bilang 'yah jadi gak bisa hilang ya?' lalu setuju HydroClean saja. Jika Scheduler mengirim ringkasan revisi (Sofa 2 seat HydroClean Rp400.000), balas 'Saya setuju'. Jika Scheduler menyuruh mengisi ulang kalkulator, mengeluh 'harus isi ulang dari awal kak?'. Selesai_booking setelah jadwal dikonfirmasi ulang.",
+  uji:["Menangkap Catatan: beludru tidak dicuci SiriBersih, tinta tidak bisa hilang","Jujur, tidak menjanjikan noda hilang","Solusi HydroClean Rp400.000 lewat ringkasan revisi di chat, klien 'Saya setuju'","Konfirmasi ulang tanpa info Cuci (tanpa air panas, tanpa kering 3–4 jam)"]},
+ {id:"sch-dimas", role:"sch", nama:"Pak Dimas", label:"Ganti jadwal + tambah item", lv:2, kota:"Jakarta Timur", refs:["Revisi","T4"],
+  buka:"Kak, order HC-261006-D1M4 yang Selasa 13 Okt siang bisa pindah ke Rabu 14 Okt sore? Sekalian tambah divan King ya, divakum aja.",
+  jadwal:"Selasa 13 Okt Siang 13.00: terisi order lama Dimas (HC-261006-D1M4). Rabu 14 Okt Sore 15.00 kosong (SiriBersih tersedia).",
+  persona:"Bapak 35 tahun, sudah pernah pesan, santai.",
+  fakta:"Order HC-261006-D1M4 sudah dikonfirmasi: Kasur King (1,8 x 2 m) Cuci Higienis Rp1.085.000, Selasa 13 Okt siang, Jl. Pemuda No. 88, Rawamangun. Pindah karena ada meeting. Tidak mau isi kalkulator lagi.",
+  perilaku:"Tanyakan 'ada biaya tambahan karena pindah jadwal?' jika belum dijelaskan. Jika Scheduler mengirim ringkasan revisi dengan total yang jelas, balas 'Saya setuju'. Jika Scheduler menyuruh mengisi ulang kalkulator, mengeluh 'harus isi dari awal lagi kak?'. Selesai_booking setelah jadwal baru dan total baru dikonfirmasi.",
+  uji:["Revisi lewat chat, tidak menyuruh isi ulang kalkulator","Divan King HydroClean Rp180.000, total baru Rp1.265.000 (selisih +Rp180.000)","Pindah ke Rabu 14 Okt 15.00, lepas slot Selasa, tanpa biaya","Ringkasan revisi -R1 dalam 1 bubble, final setelah 'Saya setuju'"]},
+ {id:"sch-citra", role:"sch", nama:"Mbak Citra", label:"Tanya kota dari kalkulator", lv:2, kota:"Cibubur", refs:["T5","T6"],
+  buka:"Halo HydroClean, apakah layanan tersedia di kota saya?",
+  jadwal:"Sabtu 17 Okt: Pagi 09.00 kosong (HydroClean dan SiriBersih).",
+  persona:"Ibu 30 tahun, ramah, tadi bingung di kalkulator.",
+  fakta:"Tinggal di Cibubur, Kelurahan Cibubur, Kecamatan Ciracas, Jakarta Timur. Tadi memilih 'kota lain' karena Cibubur tidak ada di daftar. Kasur Queen anak, anak alergi debu, tidak ada noda. Mau Sabtu 17 Okt pagi.",
+  perilaku:"Jika ditanya kota, jawab 'Cibubur kak'. Jika ditanya kecamatan, jawab 'Ciracas, Jaktim'. Jika Scheduler bilang tidak tersedia, jawab 'oh gitu, ok deh' lalu pergi. Jika diberi link dan rekomendasi, kirim WORK ORDER (Kasur Queen, layanan sesuai rekomendasi, Sabtu 17 Okt Pagi, alamat Jl. Raya Lapangan Tembak No. 3, Ciracas, Jakarta Timur, lokasi link). Selesai_booking setelah T1.",
+  uji:["Menanyakan kota dan kecamatan","Cibubur (Ciracas) = Jakarta Timur, tersedia termasuk Cuci","Rekomendasi Cuci Higienis untuk alergi + link kalkulator","T1 setelah WO masuk"]},
+ {id:"sch-hendro", role:"sch", nama:"Pak Hendro", label:"WO lalu minta diskon", lv:2, kota:"Kota Bekasi", refs:["T1","T7"],
+  buka: wo("HC-261007-H3ND", "Hendro Saputra", "0812-9900-1122", "Jl. Ahmad Yani No. 40, Bekasi Barat, Kota Bekasi", "https://maps.app.goo.gl/ayani40", "Jumat, 16 Okt 2026, Pagi", "*Kasur*\n• Kasur Super King (2 x 2 m) · Cuci Higienis — Rp1.250.000\n• Kasur Single (1,2 x 2 m) · Cuci Higienis — Rp690.000", "1.940.000"),
+  jadwal:"Jumat 16 Okt: Pagi 09.00 kosong (HydroClean dan SiriBersih).",
+  persona:"Bapak 50 tahun, pedagang, suka menawar tapi sopan.",
+  fakta:"Kasur Super King dipakai tiap hari, bau keringat. Kasur Single kamar tamu, jarang dipakai, tidak ada noda.",
+  perilaku:"Setelah balasan pertama Scheduler, tanya 'Kak 2 kasur nih, bisa diskon dong?'. Jika Scheduler menolak dengan sopan dan menjelaskan nilai, tanya 'kasur tamu jarang dipakai, perlu dicuci juga?'. Jika disarankan HydroClean saja untuk kasur tamu, setuju dan balas 'Saya setuju' untuk revisi. Jika Scheduler memberi diskon, terima (penilai yang menilai). Selesai_booking setelah jadwal dan total final jelas.",
+  uji:["T1 lengkap untuk Jumat 16 Okt 09.00","Tanpa diskon, jelaskan nilai","Kasur tamu jarang dipakai: opsi HydroClean Rp300.000, total jadi Rp1.550.000 lewat ringkasan revisi di chat","Tidak memakai kata 'estimasi'"]},
+ {id:"sch-ratna", role:"sch", nama:"Oma Ratna", label:"Tidak bisa isi kalkulator", lv:2, kota:"Jakarta Utara", refs:["T8","T1"],
+  buka:"Selamat pagi. Cucu saya kasih lihat iklan HydroClean. Saya tidak bisa isi-isi di HP, nak. Mau bersihkan kasur 2 sama sofa.",
+  jadwal:"Selasa 13 Okt: Pagi 09.00 kosong (HydroClean dan SiriBersih).",
+  persona:"Oma 70 tahun, sopan, pelan, tidak paham aplikasi.",
+  fakta:"Nama Ratna Halim, WA 0811-123-4567. Alamat Jl. Boulevard Raya Blok QJ No. 5, Kelapa Gading, Jakarta Utara. Kasur King dan kasur Single 1x2 m, sofa 3 seat kain. Tidak ada noda, Oma sering bersin. Mau Selasa 13 Okt pagi. Tidak bisa kirim lokasi, nanti cucu yang kirim.",
+  perilaku:"Jangan pernah mengirim WORK ORDER sendiri. Jika diminta data, berikan semuanya dalam satu pesan. Jika Scheduler mengirim teks WO berisi item, layanan, dan total, balas 'Saya setuju'. Jika Scheduler hanya mengirim link, bilang 'Oma bingung nak, tolong diisikan saja ya'. Selesai_booking setelah konfirmasi jadwal.",
+  uji:["Tidak memaksa Oma isi kalkulator","Minta semua data dalam satu bubble","WO diisikan Scheduler dengan harga benar (rekomendasi Cuci Higienis: King 1.085.000 + Single 1x2 585.000 + Sofa 3 seat 1.380.000 = 3.050.000)","T1 setelah 'Saya setuju'"]},
+ {id:"sch-sari", role:"sch", noBook:true, nama:"Ibu Sari", label:"Komplain, minta refund", lv:3, kota:"Jakarta Pusat", refs:["T9","Eskalasi"],
+  buka:"Kak, sofa saya kemarin dicuci noda tapi bekas kopinya masih kelihatan. Saya kecewa, minta refund aja.",
+  jadwal:"(Tidak relevan. Order HC-261003-S4R1 sudah dikerjakan Selasa 6 Okt sore.)",
+  persona:"Ibu 42 tahun, kecewa tapi masih sopan.",
+  fakta:"WO HC-261003-S4R1: Sofa 3 seat Cuci Noda Rp1.680.000, dikerjakan 6 Okt sore, sudah bayar transfer. Bekas kopi samar kecoklatan. Punya foto.",
+  perilaku:"Jika Scheduler meminta foto/nomor WO, kirim '(foto terlampir) ini kak, HC-261003-S4R1. Masih ada bayangan coklat. Katanya bisa hilang?'. Jika Scheduler menjanjikan refund atau cuci ulang gratis, terima (penilai yang menilai). Jika Scheduler menyuruh menghubungi nomor lain, kesal. Jika Scheduler jujur dan berjanji mengabari hari ini, jawab 'Oke saya tunggu kabarnya hari ini ya' lalu pergi.",
+  uji:["Empati dan minta foto/video + nomor WO","Jujur: Cuci Noda hingga 90%, tergantung kondisi","Tidak menjanjikan refund atau cuci ulang tanpa keputusan tim","Eskalasi internal, klien tidak dioper, kabar hari ini"]},
+ {id:"sch-tom", role:"sch", nama:"Mr. Tom", label:"WO dalam bahasa Inggris", lv:2, kota:"Bali", refs:["T1","English"],
+  buka: wo("HC-261007-T0MB", "Tom Becker", "+61 412 555 019", "Jl. Pantai Batu Bolong No. 15, Canggu, Badung, Bali", "https://maps.app.goo.gl/batubolong15", "Sabtu, 17 Okt 2026, Pagi", "*Kasur*\n• Kasur King (1,8 x 2 m) · HydroClean — Rp410.000\n*Bantal, guling & boneka*\n• Bantal/guling · HydroClean · 2 unit — Rp60.000", "470.000", {en: true, nosb: true, at: "7 Okt 2026 11.05"}),
+  jadwal:"Sabtu 17 Okt (Bali): Pagi 10.00 kosong. Hanya HydroClean di Bali.",
+  persona:"Expat 38 tahun, hanya bahasa Inggris, ramah, praktis.",
+  fakta:"Villa sewaan, ada di rumah Sabtu pagi. Perlu tidur di kasur itu malamnya.",
+  perilaku:"Tulis dalam bahasa Inggris. Tanyakan 'Does it get wet? I need to sleep on it that night.' jika belum dijelaskan. Selesai_booking setelah konfirmasi jelas dalam bahasa Inggris.",
+  uji:["Membalas dalam bahasa Inggris","HydroClean 100% kering, kasur langsung bisa dipakai (bukan 3–4 jam)","Konfirmasi lengkap tanpa info SiriBersih/air panas","Pembayaran transfer/VA"]},
+ {id:"sch-mega", role:"sch", nama:"Ibu Mega", label:"Ubah jadwal atau batal", lv:2, kota:"Tangerang Kota", refs:["Ubah jadwal","T2"],
+  buka:"Kak, jadwal saya besok Kamis pagi bisa diundur gak? Ada acara mendadak. Kalau gak bisa, batal aja deh.",
+  jadwal:"Kamis 8 Okt Pagi: terisi order Mega (HC-261004-M3G4). Sabtu 10 Okt Pagi 09.00 kosong. Sabtu 10 Okt Siang penuh. Senin 12 Okt Siang 13.00 kosong. SiriBersih tersedia di slot kosong.",
+  persona:"Ibu 39 tahun, sungkan karena membatalkan mendadak.",
+  fakta:"WO HC-261004-M3G4: Kasur Queen Cuci Higienis Rp870.000, Kamis 8 Okt Pagi, sudah dikonfirmasi. Lebih suka akhir pekan.",
+  perilaku:"Tanyakan 'kena biaya gak kak kalau diundur atau batal?'. Jika ditawari 2 slot, pilih Sabtu. Selesai_booking setelah jadwal baru dikonfirmasi.",
+  uji:["Tanpa biaya untuk undur/batal sebelum hari H (Rp100.000 hanya jika batal di hari H saat tim di lokasi)","Tepat 2 slot kosong dari timetable","Lepas slot Kamis, konfirmasi Sabtu 10 Okt 09.00 dalam 1 bubble","Tidak membuat klien merasa bersalah"]},
+ {id:"sch-acak", role:"sch", nama:"Klien acak", label:"Tipe dipilih Claude", lv:2, kota:"Acak", refs:["Semua"],
+  buka:null, jadwal:"", persona:"", fakta:"", perilaku:"", uji:["Sesuai situasi yang muncul"]}
+];
+SCEN.push(...SCEN_SCH);
+const WO_START_SCH = SCEN_SCH.filter(s => s.buka && /^\*(REVISI )?WORK ORDER/.test(s.buka)).map(s => s.id);
+
+Object.assign(HINT, {
+ "Cek WO":"Persetujuan, data & lokasi, area & layanan (baca Catatan), item & total, slot timetable, lalu T1.",
+ "T1":"Satu bubble: nama, WO diterima, jadwal dikunci (hari, tanggal, jam), ada di rumah, air (+air panas SB), air hasil vakum, kering 3–4 jam (Cuci), pembayaran, H-1.",
+ "T2":"Slot penuh: tepat 2 slot terdekat dari timetable dalam 1 bubble. Jangan overbooking.",
+ "T3":"Jelaskan masalah dengan jujur, beri solusi, kirim ringkasan revisi, klien 'Saya setuju'.",
+ "T4":"Revisi di chat: hitung di kalkulator, ringkasan -R1 (item, total baru, selisih, jadwal), klien 'Saya setuju'.",
+ "T5":"Tanya kota + kecamatan. Tersedia: link. Tidak: tutup sopan.",
+ "T6":"Jawab singkat + link + satu pertanyaan.",
+ "T7":"Tanpa diskon. Jelaskan nilai, cek ulang layanan per item.",
+ "T8":"Minta semua data dalam 1 bubble, isikan WO, klien balas 'Saya setuju'.",
+ "T9":"Empati, minta bukti + nomor WO, jujur, jangan janji refund, eskalasi internal, kabari hari ini.",
+ "Revisi":"Tanpa tombol revisi: semua perubahan lewat chat. Jangan suruh isi ulang kalkulator. Lepas slot lama.",
+ "Eskalasi":"Tanya leader/SPV/Finance di belakang layar. Klien tidak dioper.",
+ "English":"Balas dalam bahasa Inggris.",
+ "Ubah jadwal":"Tanpa biaya sebelum hari H. Tawarkan 2 slot, lepas slot lama."
+});
+
+const RUBRIC_SCH = [
+ ["akurasi","Akurasi info",20,"Harga, area, layanan, S&K, aturan bayar dan batal"],
+ ["cekwo","Cek WO",25,"6 langkah, masalah tertangkap sebelum jadwal dikunci"],
+ ["konfirmasi","Konfirmasi jadwal",20,"T1 lengkap dalam 1 bubble, slot dari timetable"],
+ ["bubble","Hemat bubble",15,"1 bubble per balasan, tanpa basa-basi, tidak tanya ulang data WO"],
+ ["layani","Layani tanpa oper",10,"Pertanyaan dan keberatan dijawab di chat ini"],
+ ["bahasa","Bahasa & nada",10,"Kak/kamu, sopan, tanpa kata terlarang"]
+];
+const CHAT_STAGES_SCH = ["Pesan masuk dibalas","WO ada & dicek","Jadwal dikunci","Selesai"];
+const STAGES_SCH = ["Pesan masuk dibalas","WO dicek","Slot & jadwal","Konfirmasi terkirim"];
+const NEXT_TIP_SCH = [
+ "Balas pesan masuk dalam satu bubble. Sebut namamu.",
+ "Belum ada WO? Kirim link kalkulator atau isikan WO. Sudah ada: cek 6 langkah.",
+ "Ambil slot dari timetable di brief. Penuh: tawarkan tepat 2 slot.",
+ "Kirim T1 lengkap dalam satu bubble. Setelah itu jangan balas basa-basi."];
+
+/* ---------- Quiz Scheduler ---------- */
+const T1_FAJAR = "Halo Kak Fajar, saya Rani dari HydroClean. Work order HC-261007-F4JR sudah kami terima dan jadwalnya kami kunci: Sabtu, 17 Oktober, pukul 13.00.\n\nMohon kirim Share Location rumahmu ya, supaya tim tidak salah titik. Tim kami cek kondisi kasur bersamamu sebelum dan setelah pengerjaan, jadi mohon ada di rumah. Siapkan akses air keran, tempat buang air kotor, dan air panas untuk SiriBersih. Kasur kering sekitar 3–4 jam.\n\nPembayaran di hari pengerjaan atau setelah invoice dari tim Finance (H+1), lewat transfer ke rekening resmi atau Virtual Account. Pengingat kami kirim H-1.";
+const QUIZ_SCH = [
+ {id:"q-sch-fajar", role:"sch", nama:"Pak Fajar", label:"Lokasi belum pasti, Fleksibel", lv:1, kota:"Depok", refs:["Cek WO","T1"], start:"n1",
+  info:"Timetable Sabtu 17 Okt: Pagi penuh · Siang 13.00 kosong · Sore 15.30 kosong.", nodes:{
+  n1:{st:2, k:WO_FAJAR, o:[
+   {p:10, next:"n2", t:T1_FAJAR, fb:"Tepat: slot Fleksibel dipilih dari timetable, Share Location diminta di bubble yang sama, info Cuci lengkap."},
+   {p:3, next:"n2", t:"Halo Pak, WO sudah masuk. Mau jam berapa Pak? Alamat lengkapnya di mana? Boleh share lokasinya juga.", fb:"Jam dan alamat sudah ada di WO. Fleksibel artinya Scheduler yang memilih slot. Pertanyaan ulang menambah bubble berbayar."},
+   {p:2, next:"n2", t:"WO sudah kami terima ya Pak 🙏 Nanti jadwalnya kami kabari.", fb:"Belum ada jadwal pasti. Klien harus menunggu, dan bubble berikutnya berbayar lagi."}]},
+  n2:{st:3, k:"Siap. Malamnya kasur bisa dipakai kan kak? Anak saya tidur di situ.", o:[
+   {p:10, next:"n3", t:"Bisa, Pak. Setelah dicuci, kasur kering sekitar 3–4 jam. Dengan jadwal 13.00, malamnya sudah bisa dipakai. Jangan lupa Share Location-nya ya.", fb:"Tepat: waktu kering akurat dan sekalian mengingatkan lokasi dalam satu bubble."},
+   {p:1, next:"n3", t:"Bisa langsung Pak, prosesnya 100% kering.", fb:"Salah: 100% kering hanya untuk HydroClean. Cuci Noda butuh 3–4 jam untuk kering."},
+   {p:4, next:"n3", t:"Kurang tahu Pak, nanti tanya teknisinya ya.", fb:"Waktu kering Cuci sudah ada di SOP (3–4 jam). Jawab langsung, jangan menunda."}]},
+  n3:{st:4, k:"(Share Location: Jl. Kemuning No. 7, Beji) Oke makasih kak.", o:[
+   {p:10, next:null, t:"(Tidak membalas. Lokasi dicatat di order, percakapan selesai.)", fb:"Tepat: semua info sudah dikirim. Balasan basa-basi = bubble berbayar."},
+   {p:4, next:null, t:"Lokasi sudah diterima Pak, terima kasih 🙏", fb:"Sopan, tapi tidak perlu. Lokasi cukup dicatat di order."},
+   {p:2, next:null, t:"Sama-sama Pak. Jangan lupa follow IG HydroClean ya!", fb:"Bubble promo yang tidak perlu."}]}
+ }},
+ {id:"q-sch-nadia", role:"sch", nama:"Ibu Nadia", label:"Slot penuh + total sementara", lv:2, kota:"Tangerang Selatan", refs:["T2","T1"], start:"n1",
+  info:"Timetable: Sabtu 17 Okt penuh semua · Minggu 18 Okt 09.00 kosong · Senin 19 Okt 13.00 kosong.", nodes:{
+  n1:{st:3, k:WO_NADIA, o:[
+   {p:10, next:"n2", t:"Halo Kak Nadia, saya Rani dari HydroClean. Work order HC-261007-N4D1 sudah kami terima. Sabtu 17 Okt sudah penuh. Slot terdekat yang masih kosong:\n1. Minggu, 18 Okt, pukul 09.00\n2. Senin, 19 Okt, pukul 13.00\nKakak pilih yang mana? Balas 1 atau 2.", fb:"Tepat: jujur slot penuh, tepat 2 pilihan, satu bubble."},
+   {p:4, next:"n2", t:"Halo Kak, Sabtu penuh. Mau ganti ke hari apa Kak?", fb:"Pertanyaan terbuka membuat chat berputar (klien tidak tahu slot kosong). Tawarkan 2 slot."},
+   {p:0, next:"n2", t:"Halo Kak, jadwal Sabtu 17 Okt pukul 09.00 kami kunci ya, nanti kami selipkan.", fb:"Salah: overbooking slot yang sudah penuh. Tim bisa terlambat atau batal."}]},
+  n2:{st:3, k:"Minggu aja kak. Gordennya nanti bayar berapa ya?", o:[
+   {p:10, next:"n3", t:"Jadwal kami kunci: Minggu, 18 Oktober, pukul 09.00. Gorden lipatan Rp80.000 per m², diukur tim di lokasi, lalu totalnya kami kirim di chat ini untuk kamu setujui.\n\nMohon ada di rumah, karena kondisi sofa dan gorden kami cek bersama sebelum dan setelah pengerjaan. Siapkan akses air keran, tempat buang air kotor, dan air panas untuk SiriBersih. Sofa kering sekitar 3–4 jam.\n\nPembayaran di hari pengerjaan atau setelah invoice dari tim Finance (H+1), lewat transfer ke rekening resmi atau Virtual Account. Pengingat kami kirim H-1.", fb:"Tepat: jadwal terkunci, harga gorden dari daftar harga, total sementara dijelaskan, T1 lengkap."},
+   {p:6, next:"n3", t:"Jadwal Minggu 18 Okt pukul 09.00 ya Kak. Gorden nanti dihitung teknisi di lokasi.", fb:"Jadwal benar, tapi harga per m² tidak disebut dan info persiapan/pembayaran hilang."},
+   {p:1, next:"n3", t:"Gorden sekitar 300 ribuan Kak. Jadwal Minggu 09.00 ya.", fb:"Mengarang harga. Gorden lipatan Rp80.000/m², totalnya setelah diukur."}]},
+  n3:{st:4, k:"Oke kak, makasih.", o:[
+   {p:10, next:null, t:"(Tidak membalas. Percakapan selesai.)", fb:"Tepat: tidak ada bubble basa-basi."},
+   {p:3, next:null, t:"Sama-sama Kak, ditunggu hari Minggu ya 🙏", fb:"Bubble basa-basi berbayar."},
+   {p:2, next:null, t:"Kak, sekalian karpetnya mau dibersihkan juga?", fb:"Upsell setelah closing tanpa konteks menambah bubble dan mengganggu."}]}
+ }},
+ {id:"q-sch-wulan", role:"sch", nama:"Ibu Wulan", label:"Beludru + noda tinta", lv:3, kota:"Jakarta Barat", refs:["Cek WO","T3"], start:"n1",
+  info:"Timetable Senin 12 Okt: Siang 13.00 kosong.", nodes:{
+  n1:{st:2, k:WO_WULAN, o:[
+   {p:10, next:"n2", t:"Halo Kak Wulan, saya Rani dari HydroClean. Work order HC-261007-W8LN sudah kami terima. Ada yang perlu disesuaikan: sofa bahan beludru belum bisa dicuci SiriBersih, dan noda tinta pulpen tidak bisa dihilangkan. Yang bisa kami kerjakan: HydroClean (vakum debu dan tungau, 100% kering) Rp400.000 untuk 2 seat, tanpa janji coretannya hilang.\n\nKalau setuju, balas \"Saya setuju\" dan saya bantu revisikan, jadwal tetap Senin 12 Okt pukul 13.00.", fb:"Tepat: Catatan dibaca, batasan dijelaskan jujur, solusi dengan harga benar, satu bubble."},
+   {p:1, next:"n2", t:"Halo Kak Wulan, jadwal Senin 12 Okt pukul 13.00 kami kunci. Sofa kering 3–4 jam ya.", fb:"Salah: Catatan tidak dibaca. Tim akan datang lalu batal di lokasi."},
+   {p:2, next:"n2", t:"Maaf Kak, sofa beludru tidak bisa kami kerjakan.", fb:"Tidak lengkap: HydroClean tetap bisa. Klien hilang tanpa diberi pilihan."}]},
+  n2:{st:2, k:"Yah, jadi coretannya gak bisa hilang ya? Ya udah HydroClean aja deh, saya setuju.", o:[
+   {p:10, next:"n3", t:"Revisi HC-261007-W8LN-R1: Sofa 2 seat · HydroClean Rp400.000. Jadwal kami kunci: Senin, 12 Oktober, pukul 13.00.\n\nMohon ada di rumah, karena kondisi sofa kami cek bersama sebelum dan setelah pengerjaan. Siapkan akses air keran dan tempat buang air kotor. Prosesnya 100% kering, sofa langsung bisa dipakai.\n\nPembayaran di hari pengerjaan atau setelah invoice dari tim Finance (H+1), lewat transfer ke rekening resmi atau Virtual Account. Pengingat kami kirim H-1.", fb:"Tepat: revisi jelas, konfirmasi tanpa info Cuci (tanpa air panas, langsung kering)."},
+   {p:1, next:"n3", t:"Siap Kak, HydroClean juga bisa memudarkan coretannya kok.", fb:"Salah: HydroClean tidak menghilangkan noda. Jangan memberi harapan palsu."},
+   {p:4, next:"n3", t:"Revisi Rp400.000, Senin 12 Okt pukul 13.00. Sofa kering 3–4 jam, siapkan air panas ya Kak.", fb:"Info salah: air panas dan 3–4 jam hanya untuk Cuci SiriBersih. HydroClean langsung kering."}]},
+  n3:{st:4, k:"Oke kak.", o:[
+   {p:10, next:null, t:"(Tidak membalas. Percakapan selesai.)", fb:"Tepat: tidak ada bubble basa-basi."},
+   {p:3, next:null, t:"Baik Kak, terima kasih 🙏", fb:"Bubble basa-basi berbayar."},
+   {p:2, next:null, t:"Kak, kalau mau coba Cuci Noda untuk sofa lain, kabari ya.", fb:"Promo yang tidak relevan di akhir chat."}]}
+ }},
+ {id:"q-sch-citra", role:"sch", nama:"Mbak Citra", label:"Tanya kota dari kalkulator", lv:2, kota:"Cibubur", refs:["T5","T6"], start:"n1",
+  info:"Pesan otomatis dari tombol \"Tanya Service Consultant\" di kalkulator (kota belum ada di daftar).", nodes:{
+  n1:{st:1, k:"Halo HydroClean, apakah layanan tersedia di kota saya?", o:[
+   {p:10, next:"n2", t:"Halo Kak, saya Rani dari HydroClean. Boleh info kota dan kecamatannya? HydroClean ada di Jakarta, Bogor, Depok, Tangerang, Bekasi, Bandung, Cikarang, Karawang, Surabaya, Bali, dan Medan. Cuci Higienis dan Cuci Noda di Jakarta, Kota Bekasi, Depok, Tangerang Kota, dan Tangerang Selatan.", fb:"Tepat: tanya kota + kecamatan dan langsung memberi daftar area dalam satu bubble."},
+   {p:5, next:"n2", t:"Kotanya di mana Kak?", fb:"Benar arahnya, tapi tipis. Tanpa daftar area, chat butuh bubble tambahan."},
+   {p:1, next:"n2", t:"Maaf Kak, kami hanya ada di 11 kota.", fb:"Menutup tanpa bertanya. Klien mungkin ada di area kami."}]},
+  n2:{st:1, k:"Cibubur kak, tadi di kalkulator gak ketemu pilihannya. Kecamatannya Ciracas.", o:[
+   {p:10, next:"n3", t:"Ciracas masuk Jakarta Timur, Kak, jadi tersedia termasuk Cuci Higienis dan Cuci Noda. Di kalkulator pilih kota Jakarta: [link kalkulator]\n\nItem apa yang mau dibersihkan? Ada noda atau alergi?", fb:"Tepat: kecamatan dipetakan dengan benar, link, satu pertanyaan."},
+   {p:0, next:"n3", t:"Cibubur belum tersedia Kak, mohon maaf.", fb:"Salah: Ciracas = Jakarta Timur, masuk area."},
+   {p:4, next:"n3", t:"Pilih Bogor aja Kak di kalkulator.", fb:"Salah pilih kota. Ciracas di Jakarta Timur, dan di Bogor Cuci belum tersedia."}]},
+  n3:{st:1, k:"Kasur Queen anak saya kak. Anaknya alergi debu, sering bersin. Enaknya yang mana?", o:[
+   {p:10, next:null, t:"Untuk anak yang alergi, rekomendasi kami Cuci Higienis, Kak: HydroClean mengangkat debu dan tungau tanpa bahan kimia, lalu dicuci SiriBersih supaya keringat ikut terangkat. Kering sekitar 3–4 jam. Pilih Kasur Queen · Cuci Higienis di kalkulator, lalu kirim work order-nya ke chat ini.", fb:"Tepat: rekomendasi sesuai kebutuhan, akurat, langkah berikutnya jelas."},
+   {p:5, next:null, t:"HydroClean saja cukup Kak, Rp360.000.", fb:"Harga benar, tapi melewatkan rekomendasi Cuci Higienis yang paling pas untuk alergi."},
+   {p:2, next:null, t:"Cuci Noda Kak, paling bersih.", fb:"Tidak ada noda. Jangan mendorong layanan yang tidak dibutuhkan."}]}
+ }},
+ {id:"q-sch-sari", role:"sch", nama:"Ibu Sari", label:"Komplain, minta refund", lv:3, kota:"Jakarta Pusat", refs:["T9","Eskalasi"], start:"n1",
+  info:"Order HC-261003-S4R1: Sofa 3 seat Cuci Noda, dikerjakan 6 Okt sore.", nodes:{
+  n1:{st:1, k:"Kak, sofa saya kemarin dicuci noda tapi bekas kopinya masih kelihatan. Saya kecewa, minta refund aja.", o:[
+   {p:10, next:"n2", t:"Mohon maaf atas ketidaknyamanannya, Kak Sari. Saya Rani dari HydroClean. Boleh kirim foto atau video kondisinya dan nomor work order-nya? Kami periksa bersama tim dan kabari hasilnya hari ini.", fb:"Tepat: empati, minta bukti dan nomor WO, janji kabar dengan batas waktu, tanpa menjanjikan refund."},
+   {p:2, next:"n2", t:"Mohon maaf Kak, untuk komplain silakan hubungi nomor SC kami di 0812-9332-1250 ya.", fb:"Mengoper klien ke nomor lain. Klien makin kesal. Tangani di chat ini."},
+   {p:0, next:"n2", t:"Baik Kak, kami refund ya. Mohon kirim nomor rekeningnya.", fb:"Salah: refund diputuskan tim setelah investigasi, dan refund selalu ke rekening asal pembayaran."}]},
+  n2:{st:2, k:"(foto terlampir) Ini kak, HC-261003-S4R1. Masih ada bayangan coklat. Katanya bisa hilang?", o:[
+   {p:10, next:"n3", t:"Terima kasih fotonya, Kak. Cuci Noda mengurangi noda hingga 90%, tergantung jenis dan usia nodanya, jadi bekas samar kadang masih terlihat. Foto ini sudah saya teruskan ke tim untuk diperiksa, dan hasilnya saya kabari hari ini juga.", fb:"Tepat: jujur soal batas hasil, tidak defensif, eskalasi internal dengan batas waktu."},
+   {p:3, next:"n3", t:"Itu bukan salah kami Kak, memang tidak bisa 100%.", fb:"Isinya ada benarnya, tapi defensif. Klien butuh didengar dan ditindaklanjuti."},
+   {p:1, next:"n3", t:"Tenang Kak, nanti kami cuci ulang gratis ya.", fb:"Menjanjikan sesuatu sebelum tim memutuskan. Tanya leader dulu."}]},
+  n3:{st:4, k:"Oke, saya tunggu kabarnya hari ini ya.", o:[
+   {p:10, next:null, t:"(Tidak membalas sekarang. Tanya leader/SPV, lalu kirim hasilnya hari ini dalam satu bubble.)", fb:"Tepat: tidak perlu bubble basa-basi. Yang penting kabar hari ini."},
+   {p:4, next:null, t:"Siap Kak, ditunggu ya 🙏", fb:"Bubble basa-basi. Lebih baik langsung kerjakan eskalasinya."},
+   {p:2, next:null, t:"Mohon maaf sekali lagi ya Kak, kami sangat menyesal atas kejadian ini.", fb:"Permintaan maaf berulang tanpa info baru menambah bubble."}]}
+ }}
+];
+QUIZ.push(...QUIZ_SCH);
+
+
+const WO_START = ["rudi","lina","yoga"];
+const CHAT_STAGES = ["Balas & kenalkan","Link kalkulator","WO masuk & dicek","Selesai"];
+const NEXT_TIP = [
+ "Balas pesan pertama: kenalkan HydroClean, rekomendasi, link kalkulator, satu pertanyaan. Satu bubble.",
+ "Kirim link kalkulator. Klien yang tidak bisa buka link: isikan WO untuknya (R7).",
+ "Tunggu work order. Jawab pertanyaan klien, satu bubble per giliran.",
+ "Cek WO: persetujuan, data & lokasi, area & layanan, item & total, slot timetable. Lalu kirim Template C."];
+
+/* ---------- Peran ---------- */
+const isSch = x => !!x && x.role === "sch";
+const stagesChat = x => isSch(x) ? CHAT_STAGES_SCH : CHAT_STAGES;
+const tipsChat = x => isSch(x) ? NEXT_TIP_SCH : NEXT_TIP;
+const rubricOf = x => isSch(x) ? RUBRIC_SCH : RUBRIC;
+const meLabel = x => isSch(x) ? "Kamu (Scheduler)" : "Kamu (SC)";
+let ROLE = (() => { try { return localStorage.getItem("rp-role") === "sch" ? "sch" : "sc"; } catch(e){ return "sc"; } })();
+function setRole(r){ ROLE = r; try { localStorage.setItem("rp-role", r); } catch(e){} renderBoards(); }
+$("role-sc").onclick = () => setRole("sc");
+$("role-sch").onclick = () => setRole("sch");
+
+/* ---------- Capabilities ---------- */
+const use = async n => { try { return window.claude ? await window.claude.use(n) : null; } catch(e){ return null; } };
+let sample = null, db = null, user = null, uid = null, canEdit = false;
+const ready = (async () => {
+  [sample, db, user] = await Promise.all([use("sample"), use("db"), use("user")]);
+  if (user){ try { uid = await user.id(); } catch(e){} try { canEdit = !!(await user.canEdit()); } catch(e){} }
+  $("t-team").hidden = !(canEdit && db);
+  if (!sample) $("chat-note").hidden = false;
+  if (db && uid) loadMine();
+})();
+const errCopy = c => c === "not_granted" ? "Sesi login berakhir atau akunmu tidak punya akses. Muat ulang halaman lalu masuk lagi."
+  : c === "rate_limited" ? "Terlalu banyak permintaan. Tunggu sebentar, lalu coba lagi."
+  : c === "cancelled" ? "Dibatalkan." : "Claude sedang tidak bisa dihubungi. Coba lagi sebentar lagi.";
+
+/* ---------- Navigation (steps bar like the kalkulator) ---------- */
+let view = "board";
+function show(v){
+  view = v;
+  ["board","room","quiz","res"].forEach(k => $("v-" + k).hidden = k !== v);
+  const step = v === "board" ? 1 : v === "res" ? 3 : 2;
+  [1,2,3].forEach(i => { const li = $("st" + i); li.className = i === step ? "on" : i < step ? "done" : ""; });
+  $("home").hidden = v === "board";
+  if (v === "board"){ renderResume(); renderBoards(); }
+  try { const h = v === "board" ? "" : v; if (location.hash.slice(1) !== h) location.hash = h; } catch(e){}
+  window.scrollTo({top: 0});
+}
+$("home").onclick = () => { ctl?.abort(); show("board"); };
+window.addEventListener("hashchange", () => { let h = ""; try { h = location.hash.slice(1); } catch(e){} if (!h && view !== "board") show("board"); });
+function renderResume(){
+  const el = $("resume"); let html = "";
+  if (S && !S.graded) html += `<div class="resume"><div><b>Chat belum selesai: ${esc(S.sc.nama)}</b><div class="small muted">${S.msgs.filter(m => m.r === "sc").length} balasan terkirim</div></div><div class="row"><button class="btn sm" type="button" id="r-chat">Lanjutkan</button><button class="btn ghost sm" type="button" id="x-chat">Hapus</button></div></div>`;
+  if (Q && !Q.done) html += `<div class="resume"><div><b>Quiz belum selesai: ${esc(Q.qz.nama)}</b><div class="small muted">Langkah ${Q.path.length + 1}</div></div><div class="row"><button class="btn sm" type="button" id="r-quiz">Lanjutkan</button><button class="btn ghost sm" type="button" id="x-quiz">Hapus</button></div></div>`;
+  el.innerHTML = html; el.hidden = !html;
+  if ($("r-chat")) $("r-chat").onclick = () => { show("room"); renderBrief(); renderMsgs(); };
+  if ($("x-chat")) $("x-chat").onclick = () => { S = null; renderResume(); };
+  if ($("r-quiz")) $("r-quiz").onclick = () => { show("quiz"); renderQuiz(); };
+  if ($("x-quiz")) $("x-quiz").onclick = () => { Q = null; renderResume(); };
+}
+
+/* ---------- Board ---------- */
+let myItems = [];
+function bestFor(id){ const xs = myItems.filter(x => x.scen === id).map(x => x.total); return xs.length ? Math.max(...xs) : null; }
+function card(s, kind){
+  const b = bestFor(s.id), q = kind === "quiz" ? s.nodes[s.start].k : s.buka;
+  return `<button type="button" class="scen" data-${kind}="${s.id}">
+    <div class="top"><span class="nm">${esc(s.nama)}</span><span class="pill lv${s.lv}">${LV[s.lv]}</span></div>
+    <div class="small"><b>${esc(s.label)}</b> · ${esc(s.kota)}</div>
+    <p class="q">${q ? (/^\*(REVISI )?WORK/.test(q) ? "Mengirim work order dari kalkulator" : "“" + esc(q) + "”") : "Claude memilih tipe klien secara acak"}</p>
+    <div class="tags">${s.refs.map(r => `<span class="pill ref">${esc(r)}</span>`).join("")}${b != null ? `<span class="best">terbaik ${b}</span>` : ""}</div></button>`;
+}
+function renderBoards(){
+  const sec = t => `<p class="gsec">${t}</p>`, g = (list, kind) => list.map(s => card(s, kind)).join(""), notSch = x => !isSch(x);
+  if (ROLE === "sch"){
+    $("quiz-grid").innerHTML = sec("Skenario Scheduler") + g(QUIZ.filter(isSch), "quiz") + sec("Latihan SC (tambahan)") + g(QUIZ.filter(notSch), "quiz");
+    $("scen-grid").innerHTML = sec("Skenario Scheduler: WO dan pesan dari iklan kalkulator") + g(SCEN.filter(isSch), "chat") + sec("Latihan SC (tambahan)") + g(SCEN.filter(notSch), "chat");
+  } else {
+    $("quiz-grid").innerHTML = g(QUIZ.filter(notSch), "quiz");
+    $("scen-grid").innerHTML = g(SCEN.filter(notSch), "chat");
+  }
+  $("role-sc").setAttribute("aria-pressed", ROLE === "sc"); $("role-sch").setAttribute("aria-pressed", ROLE === "sch");
+  $("role-note").textContent = ROLE === "sch" ? "Skenario Scheduler di atas, latihan SC di bawahnya." : "";
+}
+document.addEventListener("click", e => {
+  const c = e.target.closest("[data-chat]"); if (c) return startChat(c.dataset.chat);
+  const q = e.target.closest("[data-quiz]"); if (q) return startQuiz(q.dataset.quiz);
+});
+function tab(which){ ["quiz","chat","mine","team"].forEach(k => { $("t-" + k).setAttribute("aria-selected", k === which); $("p-" + k).hidden = k !== which; });
+  if (which === "mine") renderMine(); if (which === "team") loadTeam(); }
+["quiz","chat","mine","team"].forEach(k => $("t-" + k).onclick = () => tab(k));
+function flowHtml(states, labels, tip, skipTxt){
+  return `<div style="display:flex;flex-direction:column;gap:8px"><b class="small">Alur</b><ol class="flow">${labels.map((l,i) => `<li class="${states[i]}"><span class="dot">${states[i] === "ok" ? "✓" : states[i] === "skip" ? "–" : i + 1}</span><b>${esc(l)}</b>${states[i] === "skip" ? `<span class="s">${esc(skipTxt || "dilewati, mulai dari WO")}</span>` : ""}</li>`).join("")}</ol>${tip ? `<p class="next"><b>Berikutnya:</b> ${esc(tip)}</p>` : ""}</div>`;
+}
+
+/* ---------- Chat room (Claude as client) ---------- */
+let S = null, ctl = null;
+function startChat(id){
+  const sc = SCEN.find(x => x.id === id); if (!sc) return;
+  ctl?.abort();
+  S = {sc: {...sc}, msgs: [], hint: $("o-hint").checked, lastK: Date.now(), times: [], ended: false, endType: null, busy: false, graded: false};
+  $("box").value = ""; show("room"); renderHead(); renderBrief();
+  if (sc.buka) addMsg("k", sc.buka); else { addMsg("sys", "Claude sedang menyiapkan klien acak…"); clientTurn(true); }
+  renderMsgs(); setTimeout(() => $("box").focus(), 50);
+}
+function renderHead(){ $("chat-name").textContent = S.sc.nama + " · " + S.sc.label; $("chat-sub").textContent = S.sc.kota; }
+function chatFlags(){
+  const sc = S.msgs.filter(m => m.r === "sc").map(m => m.t), k = S.msgs.filter(m => m.r === "k").map(m => m.t);
+  const sch = isSch(S.sc), woStart = (sch ? WO_START_SCH : WO_START).includes(S.sc.id);
+  const link = sc.some(t => /kalkulator|\[link/i.test(t));
+  const scWo = sc.some(t => /work order|total\s*:?\s*rp/i.test(t));
+  const woIn = woStart || k.some(t => /\*(REVISI )?WORK ORDER/i.test(t) || /saya setuju/i.test(t));
+  if (sch){
+    const locked = sc.some(t => /(senin|selasa|rabu|kamis|jumat|jum'at|sabtu|minggu|monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i.test(t) && /(pukul|\bjam\b|\b\d{1,2}[.:]\d{2}\b|\bat \d|a\.m\.|\bam\b)/i.test(t));
+    return {sch, woStart, link, scWo, wo: woIn, s1: sc.length > 0, s2: woIn, s3: woIn && locked, s4: S.ended};
+  }
+  return {sch, woStart, link, scWo, wo: woIn, s1: sc.length > 0, s2: link || scWo, s3: woIn, s4: S.ended};
+}
+function chatStates(){
+  const f = chatFlags(), done = [f.s1, f.s2, f.s3, f.s4];
+  const st = done.map(d => d ? "ok" : "");
+  if (f.woStart && !f.sch){ st[0] = "skip"; st[1] = "skip"; }
+  if (S.sc.noBook){ st[1] = "skip"; st[2] = "skip"; }
+  const i = st.findIndex(x => x === ""); if (i >= 0) st[i] = "now";
+  return {st, tip: i >= 0 ? tipsChat(S.sc)[i] : ""};
+}
+function renderBrief(){
+  const sc = S.sc, {st, tip} = chatStates();
+  $("brief").innerHTML = `<div><p class="kicker">Brief latihan</p><h2>${esc(sc.nama)}</h2><p class="small muted">${esc(sc.label)} · ${LV[sc.lv] || ""}</p></div>
+    <dl><dt>Kota</dt><dd>${esc(sc.kota)}</dd><dt>Sumber</dt><dd>${isSch(sc) ? "Iklan link → kalkulator (organik, setiap bubble berbayar)" : "Iklan IG (CTWA)"}</dd>${sc.jadwal ? `<dt>Timetable</dt><dd>${esc(sc.jadwal)}</dd>` : ""}</dl>
+    ${flowHtml(st, stagesChat(sc), S.ended || !S.hint ? "" : tip, sc.noBook ? "tidak berlaku (komplain)" : "")}
+    ${S.hint ? `<div class="hint"><b>Contekan SOP</b><ul>${sc.refs.map(r => `<li><b>${esc(r)}</b>: ${esc(HINT[r] || "")}</li>`).join("")}</ul></div>` : ""}`;
+}
+function addMsg(r, t){ S.msgs.push({r, t, at: Date.now()}); }
+function renderMsgs(){
+  const el = $("msgs");
+  el.innerHTML = S.msgs.map(m => m.r === "sys" ? `<div class="msg sys">${esc(m.t)}</div>` :
+    `<div class="msg ${m.r}"><span class="who">${m.r === "k" ? esc(S.sc.nama) : meLabel(S.sc)}</span>${esc(m.t)}</div>`).join("") +
+    (S.busy ? `<div class="typing"><span class="spin" aria-hidden="true"></span>${esc(S.sc.nama)} sedang mengetik…</div>` : "");
+  el.scrollTop = el.scrollHeight;
+  const n = S.msgs.filter(m => m.r === "sc").length;
+  $("counter").textContent = n + " bubble kamu";
+  $("send").disabled = S.busy || S.ended || !sample; $("finish").disabled = S.busy || n === 0;
+  $("box").disabled = S.ended; renderBrief();
+}
+$("ins-link").onclick = () => { const b = $("box"), p = b.selectionStart ?? b.value.length; b.value = b.value.slice(0, p) + LINK + b.value.slice(p); b.focus(); };
+$("box").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)){ e.preventDefault(); send(); } });
+$("send").onclick = send;
+$("finish").onclick = () => grade();
+function send(){
+  if (!S || S.busy || S.ended) return;
+  const t = $("box").value.trim(); if (!t) return;
+  S.times.push(Math.round((Date.now() - S.lastK) / 1000));
+  addMsg("sc", t); $("box").value = "";
+  if (S.msgs.filter(m => m.r === "sc").length >= MAX_TURNS){ addMsg("sys", "Batas " + MAX_TURNS + " balasan tercapai. Tekan Selesai & nilai."); S.ended = true; renderMsgs(); return; }
+  clientTurn(false);
+}
+function transcript(withNum){
+  let i = 0;
+  return S.msgs.filter(m => m.r !== "sys").map(m => (withNum && m.r === "sc" ? "[" + (isSch(S.sc) ? "SCHEDULER" : "SC") + " #" + (++i) + "] " : m.r === "sc" ? (isSch(S.sc) ? "SCHEDULER: " : "SC: ") : "KLIEN: ") + m.t).join("\n\n");
+}
+async function clientTurn(isOpening){
+  if (!sample) return;
+  S.busy = true; renderMsgs();
+  const sc = S.sc, f = chatFlags(), sch = isSch(sc), who = sch ? "Scheduler" : "Service Consultant (SC)";
+  const prompt = isOpening ? (sch ?
+`Kamu membantu simulasi latihan chat WhatsApp untuk Scheduler HydroClean. Klien datang dari iklan Instagram berisi Kalkulator HydroClean, membuka kalkulator, lalu chat ke WhatsApp Scheduler. Buat SATU persona klien acak yang realistis dari salah satu tipe berikut (pilih satu secara acak): mengirim work order lengkap; work order dengan lokasi "pencarian dari alamat"; work order di slot yang penuh; work order dengan bahan/noda yang tidak bisa dicuci SiriBersih di Catatan; work order layanan Cuci di kota tanpa SiriBersih; revisi work order; bertanya dulu tanpa work order; tidak bisa isi kalkulator; minta ubah jadwal; komplain setelah pengerjaan. Gunakan fakta bisnis di bawah agar situasinya masuk akal. Tanggal sekarang 7 Okt 2026 (Rabu).
+
+${KB}
+
+Jika pesan pembuka berupa work order, pakai format ini dengan harga yang benar:
+${WO_FMT_SCH}
+
+Balas HANYA JSON: {"nama":"panggilan klien","label":"tipe singkat","kota":"kota/kecamatan","persona":"usia, sifat, gaya chat","fakta":"item, ukuran, kondisi, alamat singkat, jadwal yang diinginkan","perilaku":"bagaimana klien bereaksi dan kapan selesai","jadwal":"isi timetable Scheduler untuk tanggal yang relevan: slot mana yang kosong/penuh (Pagi 09.00, Siang 13.00, Sore 15.30)","uji":["3-4 hal SOP Scheduler yang diuji"],"pesan":"pesan pembuka klien (teks work order lengkap ATAU 1-2 kalimat)"}`
+:
+`Kamu membantu simulasi latihan chat WhatsApp untuk Service Consultant (SC) HydroClean. Buat SATU persona klien acak yang realistis dari salah satu tipe berikut (pilih satu secara acak): tanya info dari iklan; tanya harga dulu; kirim cerita noda; tanya area kota; tidak bisa buka link; ragu dan mau tanya pasangan; keberatan harga; noda yang tidak bisa dihilangkan; bahan yang tidak bisa dicuci. Gunakan fakta bisnis di bawah agar situasinya masuk akal.
+
+${KB}
+
+Balas HANYA JSON: {"nama":"panggilan klien, mis. Ibu Wati","label":"tipe singkat","kota":"kota/kecamatan","persona":"usia, sifat, gaya chat","fakta":"item, ukuran, kondisi, alamat singkat, jadwal yang diinginkan","perilaku":"bagaimana klien bereaksi dan kapan selesai","uji":["3-4 hal SOP yang diuji"],"pesan":"pesan pembuka klien di WhatsApp, 1-2 kalimat"}`)
+:
+`Kamu memerankan KLIEN dalam simulasi latihan chat WhatsApp untuk ${who} HydroClean. Tetap dalam peran. Jangan membantu ${sch ? "Scheduler" : "SC"}, jangan menilai, jangan menyebut bahwa ini simulasi.${sch ? " Kamu datang dari iklan Instagram berisi Kalkulator HydroClean. Pihak yang membalasmu adalah tim HydroClean (di work order disebut SC). Tanggal sekarang 7 Okt 2026 (Rabu)." : ""}
+
+PERSONA: ${sc.nama}. ${sc.persona}
+KOTA: ${sc.kota}
+FAKTA YANG KAMU TAHU (ungkapkan hanya jika ditanya atau wajar): ${sc.fakta}
+PERILAKU: ${sc.perilaku}
+
+STATUS ALUR (ikuti urutan seperti di Kalkulator HydroClean):
+- Link kalkulator sudah dikirim: ${f.link ? "YA" : "BELUM"}
+- Work order sudah ada: ${f.wo ? "YA" : "BELUM"}
+ATURAN ALUR: jika belum ada work order, kamu hanya boleh mengirim work order SETELAH ${sch ? "Scheduler" : "SC"} mengirim link kalkulator (atau setelah ${sch ? "Scheduler" : "SC"} mengisikan work order untukmu, lalu kamu cukup balas "Saya setuju"). Jadwal baru dianggap final SETELAH work order ada dan ${sch ? "Scheduler" : "SC"} menyebut hari, tanggal, dan jam. Kamu tidak tahu slot mana yang kosong; terima tawaran slot yang wajar.
+
+PENGETAHUAN BISNIS (klien biasa TIDAK hafal ini; pakai hanya untuk membuat work order yang benar dan bereaksi wajar):
+${KB}
+
+Jika kamu memesan lewat kalkulator, kirim teks work order dengan format ini (harga sesuai daftar harga dan layanan yang disarankan). Perubahan SETELAH work order terkirim tidak lewat kalkulator (tidak ada tombol revisi): sampaikan di chat, lalu balas "Saya setuju" jika ringkasan revisi dari tim sudah benar.
+${sch ? WO_FMT_SCH : WO_FMT}
+
+ATURAN BALASAN: tulis seperti chat WhatsApp orang sungguhan: singkat (biasanya 1–3 kalimat), santai, sesuai persona. Tanggapi balasan terakhir. Jika pertanyaanmu tidak dijawab, tanya lagi atau tunjukkan bingung. Jika dibalas beberapa bubble beruntun, tanggapi sekaligus. Jika diberi info salah, kamu tidak tahu itu salah (kecuali persona skeptis). Status "selesai_booking" hanya setelah jadwal final dan kamu puas; "pergi" jika kamu memutuskan tidak jadi/menunda/menunggu kabar dan percakapan wajar berakhir, atau dua kali tidak dibantu; selain itu "lanjut".
+
+PERCAKAPAN SEJAUH INI:
+${transcript(false)}
+
+Balas HANYA JSON: {"pesan":"balasan klien berikutnya","status":"lanjut|selesai_booking|pergi"}`;
+  ctl = new AbortController();
+  try {
+    const out = await sample.json(prompt, {modelTier: "quick", cache: false, signal: ctl.signal});
+    if (!S) return;
+    if (isOpening){
+      S.msgs = S.msgs.filter(m => m.r !== "sys");
+      Object.assign(S.sc, {nama: String(out.nama || "Klien"), label: String(out.label || "Klien acak"), kota: String(out.kota || "-"), persona: String(out.persona || ""), fakta: String(out.fakta || ""), perilaku: String(out.perilaku || ""), uji: Array.isArray(out.uji) ? out.uji.map(String) : ["Sesuai situasi"], jadwal: String(out.jadwal || "")});
+      renderHead();
+      addMsg("k", String(out.pesan || "Halo kak, mau tanya-tanya soal HydroClean."));
+    } else {
+      let msg = String(out?.pesan || "").trim(), status = out?.status;
+      if (!msg) throw {code: "bad_output"};
+      // Flow guard 1: no work order before the calculator link (same order as the kalkulator)
+      if (/\*(REVISI )?WORK ORDER/i.test(msg) && !f.wo && !f.link && !f.scWo) msg = ["tini","sch-ratna"].includes(sc.id) ? "Oma bingung nak, tolong diisikan saja ya." : "Boleh kirim link buat pesannya, kak?";
+      // Flow guard 2: no confirmed booking before a work order exists
+      if (status === "selesai_booking" && !chatFlagsAfter(msg).wo) status = "lanjut";
+      addMsg("k", msg);
+      if (status === "selesai_booking" || status === "pergi"){
+        S.ended = true; S.endType = status;
+        addMsg("sys", status === "selesai_booking" ? "Klien selesai: jadwal terkonfirmasi. Tekan Selesai & nilai." : "Klien mengakhiri percakapan. Tekan Selesai & nilai.");
+      }
+    }
+    S.lastK = Date.now();
+  } catch(e){
+    if (!S) return;
+    if (e?.code === "cancelled") return;
+    addMsg("sys", errCopy(e?.code) + (e?.code === "not_granted" ? "" : " Pesanmu dikembalikan ke kotak balasan, coba kirim lagi."));
+    if (!isOpening){ const last = [...S.msgs].reverse().find(m => m.r === "sc"); if (last){ S.msgs.splice(S.msgs.lastIndexOf(last), 1); $("box").value = last.t; S.times.pop(); } }
+  } finally {
+    if (S){ S.busy = false; if (view === "room"){ renderMsgs(); if (!S.ended) $("box").focus(); } }
+  }
+}
+function chatFlagsAfter(msg){ S.msgs.push({r: "k", t: msg}); const f = chatFlags(); S.msgs.pop(); return f; }
+
+/* ---------- Auto checks ---------- */
+function autoChecks(){
+  const sc = S.msgs.filter(m => m.r === "sc").map(m => m.t), all = sc.join("\n").toLowerCase();
+  const banned = ["premium","estimasi","bolak-balik","bolak balik"].filter(w => all.includes(w));
+  const filler = sc.filter(t => t.length < 25 && /^(baik|siap|ok|oke|ditunggu|sama-sama|sip)\b/i.test(t.trim())).length;
+  const anda = (all.match(/\banda\b/g) || []).length;
+  const avg = S.times.length ? Math.round(S.times.reduce((a,b) => a + b, 0) / S.times.length) : 0;
+  const f = chatFlags();
+  const nb = !!S.sc.noBook;
+  const stages = f.sch ? [f.s1, nb ? null : f.s2, nb ? null : f.s3, f.s4] : [f.woStart ? null : f.s1, f.woStart ? null : f.s2, f.s3, f.s4];
+  return {bubbles: sc.length, link: f.link || f.scWo, banned, filler, anda, avg, stages, role: f.sch ? "sch" : "sc"};
+}
+
+/* ---------- Grade chat ---------- */
+async function grade(){
+  if (!S) return;
+  ctl?.abort();
+  const ac = autoChecks(), sc = S.sc;
+  show("res");
+  $("v-res").innerHTML = `<div class="card"><p><span class="spin" aria-hidden="true"></span>Claude sedang menilai percakapanmu. Biasanya 20–60 detik.</p></div>`;
+  if (!sample){ $("v-res").innerHTML = `<div class="notice">Penilaian chat butuh Claude, yang tidak tersedia di tampilan ini. Coba Quiz pilihan.</div>`; return; }
+  const sch = isSch(sc), rub = rubricOf(sc), stg = stagesChat(sc), me = sch ? "Scheduler" : "SC";
+  const stageTxt = stg.map((l,i) => l + ": " + (ac.stages[i] === null ? "tidak berlaku" : ac.stages[i] ? "tercapai" : "belum")).join("; ");
+  const prompt =
+`Kamu penilai QA untuk ${sch ? "Scheduler" : "Service Consultant (SC)"} HydroClean. Nilai balasan ${me} dalam latihan roleplay di bawah secara adil dan tegas berdasarkan SOP dan fakta bisnis. Nilai HANYA balasan ${me}.
+
+${sch ? SOP_SCH : SOP}
+
+FAKTA BISNIS:
+${KB}
+
+SKENARIO: ${sc.nama} · ${sc.label} · ${sc.kota}
+Fakta klien (tersembunyi dari ${me}): ${sc.fakta}${sch && sc.jadwal ? "\nTimetable yang dilihat Scheduler: " + sc.jadwal : ""}
+Yang diuji: ${(sc.uji || []).join("; ")}
+TAHAP ALUR (${stg.join(" → ")}): ${stageTxt}. Cara selesai: ${S.endType === "selesai_booking" ? "jadwal dikonfirmasi" : S.endType === "pergi" ? "klien mengakhiri" : me + " menekan Selesai"}.
+
+CEK OTOMATIS: ${ac.bubbles} bubble ${me}; link kalkulator ${ac.link ? "terkirim" : "tidak terkirim"}${sch ? " (Scheduler hanya perlu link jika klien belum punya WO)" : ""}; kata terlarang: ${ac.banned.length ? ac.banned.join(", ") : "tidak ada"}; bubble basa-basi: ${ac.filler}; kata "Anda": ${ac.anda}.
+
+TRANSKRIP:
+${transcript(true)}
+
+RUBRIK (maksimal): ${rub.map(([k,,max,d]) => k + " " + max + " (" + d + ")").join(", ")}. Tahap yang seharusnya tercapai tapi belum = dikurangi. Untuk klien berbahasa Inggris, nilai bahasa Inggrisnya.${sch ? " Mengoper klien ke nomor lain = layani maksimal 2. Bertanya ulang data yang sudah ada di WO = bubble dikurangi. Overbooking slot penuh atau menjanjikan refund = akurasi maksimal 5." : ""}
+
+Balas HANYA JSON:
+{"skor":{${rub.map(([k]) => '"' + k + '":0').join(",")}},
+"komentar":{${rub.map(([k]) => '"' + k + '":"1 kalimat"').join(",")}},
+"kekuatan":["maks 3 poin singkat"],
+"perbaikan":[{"giliran":1,"masalah":"apa yang kurang","contoh":"contoh balasan ${me} yang lebih baik dalam satu bubble"}],
+"ringkasan":"1-2 kalimat untuk ${me}"}
+Maksimal 3 perbaikan, urutkan dari yang paling penting.`;
+  try {
+    const r = await sample.json(prompt, {modelTier: "default", cache: false});
+    const scores = {}, notes = {};
+    rub.forEach(([k,,max]) => { const v = Math.round(Number(r?.skor?.[k])); scores[k] = Math.max(0, Math.min(max, isFinite(v) ? v : 0)); notes[k] = String(r?.komentar?.[k] || ""); });
+    const total = rub.reduce((a,[k]) => a + scores[k], 0);
+    const res = {mode: "chat", role: sch ? "sch" : "sc", id: "r" + Date.now().toString(36), at: Date.now(), scen: sc.id, scenName: sc.nama + " · " + sc.label, lv: sc.lv,
+      total, scores, notes, kekuatan: (r?.kekuatan || []).slice(0,3).map(String),
+      perbaikan: (r?.perbaikan || []).slice(0,3).map(p => ({giliran: Number(p?.giliran) || null, masalah: String(p?.masalah || ""), contoh: String(p?.contoh || "")})),
+      ringkasan: String(r?.ringkasan || ""), checks: ac, hint: S.hint, msgs: S.msgs.filter(m => m.r !== "sys").map(m => ({r: m.r, t: m.t}))};
+    S.graded = true; S = null;
+    const saved = await saveRun(res);
+    renderResult(res, {saved, own: true});
+  } catch(e){
+    $("v-res").innerHTML = `<div class="card" style="display:flex;flex-direction:column;gap:10px"><div class="notice">${esc(errCopy(e?.code))}</div><div class="row"><button class="btn" type="button" id="retry-g">Nilai lagi</button><button class="btn ghost" type="button" id="back-r">Kembali ke chat</button></div></div>`;
+    $("retry-g").onclick = () => grade(); $("back-r").onclick = () => { show("room"); renderMsgs(); };
+  }
+}
+
+/* ---------- Quiz room (branching, no AI) ---------- */
+let Q = null;
+const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+function startQuiz(id){
+  const qz = QUIZ.find(x => x.id === id); if (!qz) return;
+  Q = {qz, node: qz.start, path: [], picked: null, order: {}, done: false};
+  show("quiz"); renderQuiz();
+}
+function quizStates(){
+  const n = Q.qz.nodes[Q.node], firstSt = Q.qz.nodes[Q.qz.start].st, doneSt = new Set(Q.path.map(p => p.st));
+  const cur = Q.done ? 5 : n.st;
+  const st = [1,2,3,4].map(s => s < firstSt ? "skip" : (s < cur || (Q.done && doneSt.has(s)) || (doneSt.has(s) && s < cur)) ? "ok" : s === cur ? "now" : "");
+  return {st, tip: Q.done ? "" : tipsChat(Q.qz)[n.st - 1]};
+}
+function renderQuiz(){
+  const qz = Q.qz, n = qz.nodes[Q.node], {st, tip} = quizStates();
+  $("q-name").textContent = qz.nama + " · " + qz.label; $("q-sub").textContent = qz.kota;
+  $("q-counter").textContent = "Langkah " + (Q.path.length + 1);
+  $("qbrief").innerHTML = `<div><p class="kicker">Quiz pilihan</p><h2>${esc(qz.nama)}</h2><p class="small muted">${esc(qz.label)} · ${LV[qz.lv]}</p></div>
+    <dl><dt>Kota</dt><dd>${esc(qz.kota)}</dd>${qz.info ? `<dt>${isSch(qz) ? "Timetable" : "Info"}</dt><dd>${esc(qz.info)}</dd>` : ""}<dt>Cara</dt><dd>Pilih balasan terbaik. Langkah berikutnya mengikuti pilihanmu.</dd></dl>
+    ${flowHtml(st, isSch(qz) ? STAGES_SCH : STAGES, tip)}`;
+  const bub = (r, t) => `<div class="msg ${r}"><span class="who">${r === "k" ? esc(qz.nama) : meLabel(qz)}</span>${esc(t)}</div>`;
+  let html = Q.path.map(p => bub("k", p.k) + bub("sc", p.t)).join("");
+  html += bub("k", n.k);
+  if (Q.picked) html += bub("sc", n.o[Q.picked.i].t);
+  $("q-msgs").innerHTML = html; $("q-msgs").scrollTop = $("q-msgs").scrollHeight;
+  const order = Q.order[Q.node] || (Q.order[Q.node] = shuffle([0,1,2]));
+  const L = "ABC";
+  if (!Q.picked){
+    $("q-opts").innerHTML = `<p class="small muted">Pilih balasanmu:</p>` + order.map((i,j) => `<button type="button" class="opt" data-o="${i}"><span class="l">${L[j]}</span><span>${esc(n.o[i].t)}</span></button>`).join("");
+    $("q-opts").querySelectorAll("[data-o]").forEach(b => b.onclick = () => pick(+b.dataset.o));
+  } else {
+    const o = n.o[Q.picked.i], best = n.o.reduce((a,x) => x.p > a.p ? x : a, n.o[0]), cls = o.p >= 8 ? "good" : o.p >= 4 ? "mid" : "bad";
+    $("q-opts").innerHTML = `<div class="fb ${cls}"><b>${o.p >= 8 ? "Tepat" : o.p >= 4 ? "Kurang tepat" : "Salah"} · ${o.p}/10</b><span>${esc(o.fb)}</span>${o !== best ? `<span class="small muted">Balasan terbaik:</span><div class="ideal">${esc(best.t)}</div>` : ""}</div>
+      <div class="row" style="justify-content:flex-end"><button class="btn" type="button" id="q-next">${o.next ? "Lanjut" : "Lihat nilai"}</button></div>`;
+    $("q-next").onclick = nextNode; $("q-next").focus();
+  }
+}
+function pick(i){ if (Q.picked) return; Q.picked = {i}; renderQuiz(); }
+async function nextNode(){
+  const n = Q.qz.nodes[Q.node], o = n.o[Q.picked.i], best = Math.max(...n.o.map(x => x.p));
+  Q.path.push({node: Q.node, st: n.st, k: n.k, t: o.t, p: o.p, max: best, fb: o.fb, best: n.o.find(x => x.p === best).t});
+  Q.picked = null;
+  if (o.next){ Q.node = o.next; renderQuiz(); return; }
+  Q.done = true;
+  const got = Q.path.reduce((a,p) => a + p.p, 0), max = Q.path.reduce((a,p) => a + p.max, 0);
+  const res = {mode: "quiz", role: isSch(Q.qz) ? "sch" : "sc", id: "q" + Date.now().toString(36), at: Date.now(), scen: Q.qz.id, scenName: Q.qz.nama + " · " + Q.qz.label, lv: Q.qz.lv,
+    total: Math.round(got / max * 100), steps: Q.path.map(p => ({k: p.k, t: p.t, p: p.p, max: p.max, fb: p.fb, best: p.best}))};
+  Q = null; show("res");
+  $("v-res").innerHTML = `<div class="card"><p><span class="spin" aria-hidden="true"></span>Menyimpan hasil…</p></div>`;
+  const saved = await saveRun(res);
+  renderResult(res, {saved, own: true});
+}
+
+/* ---------- Results ---------- */
+const verdictOf = t => t >= 85 ? ["Siap pegang chat","v-good"] : t >= 70 ? ["Hampir siap","v-mid"] : ["Perlu latihan lagi","v-bad"];
+function fmtDate(t){ return new Date(t).toLocaleString("id-ID", {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"}); }
+function headCard(res, inner, {saved, own, who}){
+  const [vt, vc] = verdictOf(res.total);
+  return `<div class="card score">
+    <div class="big"><p class="kicker">${who ? esc(who) + " · " : ""}${res.role === "sch" ? "Scheduler · " : ""}${res.mode === "quiz" ? "Quiz" : "Chat"} · ${esc(res.scenName)}</p><div class="n">${res.total}<small>/100</small></div><span class="verdict ${vc}">${vt}</span>
+      <p class="small muted">${fmtDate(res.at)}${res.hint ? " · pakai contekan" : ""}</p>
+      ${own ? `<p class="small muted">${saved === "db" ? "Hasil tersimpan di riwayat." : saved === "local" ? "Hasil tersimpan di perangkat ini (Riwayat saya). Screenshot halaman ini atau tekan Salin ringkasan, lalu kirim ke leader." : "Hasil tidak tersimpan. Screenshot halaman ini atau tekan Salin ringkasan, lalu kirim ke leader."}</p>
+      <div class="row"><button class="btn ghost sm" type="button" id="copy-sum">Salin ringkasan untuk leader</button><span class="small muted" id="copy-msg" aria-live="polite"></span></div><textarea id="sum-txt" readonly hidden style="width:100%;min-height:90px;font:inherit;font-size:13px"></textarea>` : ""}</div>
+    ${inner}</div>`;
+}
+function renderResult(res, opts = {}){
+  const own = !!opts.own;
+  const again = own ? `<button class="btn" type="button" id="again">Ulangi latihan ini</button>` : "";
+  const tail = `<div class="row">${again}<button class="btn ghost" type="button" id="back">${own ? "Latihan lain" : "Kembali"}</button></div>`;
+  if (res.mode === "quiz"){
+    $("v-res").innerHTML = headCard(res, `<div style="display:flex;flex-direction:column;gap:2px"><h3 style="margin-bottom:6px">Per langkah</h3>${(res.steps || []).map((s,i) => `<div class="qstep"><b>Langkah ${i + 1}</b><span class="pts">${s.p}/${s.max}</span><p>${esc(s.fb)}</p></div>`).join("")}</div>`, opts) +
+      `<div class="card"><details class="tx"><summary>Lihat percakapan dan balasan terbaik</summary><div class="msgs">${(res.steps || []).map((s,i) => `<div class="msg k"><span class="who">Klien</span>${esc(s.k)}</div><div class="msg sc"><span class="who">Pilihanmu · ${s.p}/${s.max}</span>${esc(s.t)}</div>${s.p < s.max ? `<div class="msg sc" style="border-style:dashed"><span class="who">Balasan terbaik</span>${esc(s.best)}</div>` : ""}`).join("")}</div></details></div>` + tail;
+  } else {
+    const c = res.checks || {}, chk = (ok, t) => `<span class="chk ${ok ? "ok" : "no"}">${ok ? "✓" : "✗"} ${esc(t)}</span>`;
+    let n = 0;
+    $("v-res").innerHTML = headCard(res, `<div class="bars">${rubricOf(res).map(([k,label,max]) => `<div class="bar-row"><b>${label}</b><span class="pts">${res.scores[k]}/${max}</span><div class="track"><div class="fill" style="width:${Math.round(res.scores[k]/max*100)}%"></div></div>${res.notes?.[k] ? `<p>${esc(res.notes[k])}</p>` : ""}</div>`).join("")}</div>`, opts) +
+    `<div class="card" style="display:flex;flex-direction:column;gap:10px"><h3>Alur dan cek otomatis</h3><div class="checks">
+      ${(c.stages || []).map((v,i) => v === null ? `<span class="chk">– ${esc(stagesChat(res)[i])} (tidak berlaku)</span>` : chk(v, stagesChat(res)[i])).join("")}</div><div class="checks">
+      ${chk(!(c.banned||[]).length, (c.banned||[]).length ? "Kata terlarang: " + c.banned.join(", ") : "Tanpa kata terlarang")}${chk(!c.filler, c.filler ? c.filler + " bubble basa-basi" : "Tanpa bubble basa-basi")}${chk(!c.anda, c.anda ? "Memakai \"Anda\" " + c.anda + "x" : "Pakai kamu, bukan Anda")}
+      <span class="chk">${c.bubbles} bubble ${res.role === "sch" ? "Scheduler" : "SC"}</span><span class="chk">Rata-rata balas ${c.avg} detik</span></div>
+      ${res.ringkasan ? `<p>${esc(res.ringkasan)}</p>` : ""}</div>
+    ${res.kekuatan?.length ? `<div class="card" style="display:flex;flex-direction:column;gap:8px"><h3>Yang sudah bagus</h3><ul class="plain">${res.kekuatan.map(k => `<li>${esc(k)}</li>`).join("")}</ul></div>` : ""}
+    ${res.perbaikan?.length ? `<div class="card" style="display:flex;flex-direction:column;gap:12px"><h3>Perbaiki ini</h3>${res.perbaikan.map(p => `<div class="fix"><b>${p.giliran ? "Balasan #" + p.giliran + ": " : ""}${esc(p.masalah)}</b>${p.contoh ? `<span class="small muted">Contoh yang lebih baik:</span><div class="better">${esc(p.contoh)}</div>` : ""}</div>`).join("")}</div>` : ""}
+    <div class="card"><details class="tx"><summary>Lihat transkrip</summary><div class="msgs">${(res.msgs||[]).map(m => `<div class="msg ${m.r}"><span class="who">${m.r === "k" ? "Klien" : (res.role === "sch" ? "Scheduler #" : "SC #") + (++n)}</span>${esc(m.t)}</div>`).join("")}</div></details></div>` + tail;
+  }
+  if ($("again")) $("again").onclick = () => res.mode === "quiz" ? startQuiz(res.scen) : startChat(res.scen);
+  if ($("copy-sum")) $("copy-sum").onclick = () => {
+    const sum = summaryText(res), ta = $("sum-txt");
+    const fallback = () => { ta.value = sum; ta.hidden = false; ta.focus(); ta.select(); $("copy-msg").textContent = "Teks sudah dipilih. Salin manual, lalu tempel di WhatsApp."; };
+    try { navigator.clipboard.writeText(sum).then(() => { $("copy-msg").textContent = "Tersalin. Tempel di WhatsApp ke leader."; }, fallback); } catch(e){ fallback(); }
+  };
+  $("back").onclick = () => { show("board"); if (!own) tab(opts.who ? "team" : "mine"); };
+}
+
+/* ---------- Storage ---------- */
+const LS_RUNS = "rp-runs";
+function loadLocal(){ try { const a = JSON.parse(localStorage.getItem(LS_RUNS) || "[]"); return Array.isArray(a) ? a : []; } catch(e){ return []; } }
+function saveLocal(res){ try { const a = [res, ...loadLocal().filter(x => x.id !== res.id)].slice(0, 60); localStorage.setItem(LS_RUNS, JSON.stringify(a)); return true; } catch(e){ return false; } }
+function mergeItems(a, b){ const m = new Map(); [...a, ...b].forEach(x => { if (x && x.id && !m.has(x.id)) m.set(x.id, x); }); return [...m.values()].sort((x, y) => (y.at || 0) - (x.at || 0)); }
+function summaryText(res){
+  const lines = ["Latihan Roleplay HydroClean", "Nama: (tulis namamu)", (res.role === "sch" ? "Peran: Scheduler" : "Peran: Service Consultant"), (res.mode === "quiz" ? "Quiz: " : "Chat: ") + res.scenName, "Nilai: " + res.total + "/100 (" + verdictOf(res.total)[0] + ")" + (res.hint ? ", pakai contekan" : ""), "Waktu: " + fmtDate(res.at)];
+  if (res.mode !== "quiz" && res.scores) lines.push(rubricOf(res).map(([k, l, max]) => l + " " + (res.scores[k] ?? 0) + "/" + max).join(" · "));
+  return lines.join("\n");
+}
+myItems = loadLocal();
+async function saveRun(res){
+  await ready;
+  const local = saveLocal(res);
+  if (local) myItems = mergeItems([res], myItems);
+  if (!db || !uid) return local ? "local" : false;
+  try {
+    await db.collection("runs/" + uid + "/items").doc(res.id).set(res);
+    myItems = [res, ...myItems.filter(x => x.id !== res.id)];
+    const ts = myItems.map(x => x.total);
+    await db.doc("runs/" + uid).set({n: myItems.length, best: Math.max(...ts), avg: Math.round(ts.reduce((a,b) => a + b, 0) / ts.length), last: res.total, lastScen: (res.role === "sch" ? "Scheduler · " : "") + (res.mode === "quiz" ? "Quiz · " : "Chat · ") + res.scenName, lastAt: res.at, role: ROLE});
+    return "db";
+  } catch(e){ return local ? "local" : false; }
+}
+async function loadMine(){
+  try { const q = await db.collection("runs/" + uid + "/items").orderBy("at", "desc").limit(100).get(); myItems = mergeItems(q.docs.map(d => d.data()), loadLocal()); if (view === "board") renderBoards(); if (!$("p-mine").hidden) renderMine(); } catch(e){}
+}
+function itemsTable(items){
+  if (!items.length) return `<p class="empty">Belum ada latihan. Mulai dari tab Latihan chat.</p>`;
+  return `<div class="tw"><table><thead><tr><th>Waktu</th><th>Mode</th><th>Latihan</th><th>Tingkat</th><th class="n">Nilai</th><th>Hasil</th></tr></thead><tbody>${items.map((x,i) => `<tr class="click" data-i="${i}"><td class="n" style="text-align:left">${fmtDate(x.at)}</td><td>${x.mode === "quiz" ? "Quiz" : "Chat"}${x.role === "sch" ? " · Scheduler" : ""}</td><td>${esc(x.scenName)}${x.hint ? ' <span class="pill">contekan</span>' : ""}</td><td>${LV[x.lv] || "-"}</td><td class="n">${x.total}</td><td><span class="verdict ${verdictOf(x.total)[1]}">${verdictOf(x.total)[0]}</span></td></tr>`).join("")}</tbody></table></div>`;
+}
+function bindRows(el, items, who){ el.querySelectorAll("tr[data-i]").forEach(tr => tr.onclick = () => { show("res"); renderResult(items[+tr.dataset.i], {who}); }); }
+async function renderMine(){
+  await ready;
+  const el = $("p-mine");
+  const note = `<p class="small muted" style="margin-bottom:10px">Riwayat tersimpan di akunmu dan bisa dilihat leader di Rekap tim. Kamu juga bisa kirim lewat tombol Salin ringkasan di halaman nilai.</p>`;
+  const ts = myItems.map(x => x.total);
+  el.innerHTML = `<div class="row" style="gap:18px;margin-bottom:12px"><span><b class="mono">${myItems.length}</b> <span class="small muted">latihan</span></span><span><b class="mono">${ts.length ? Math.round(ts.reduce((a,b)=>a+b,0)/ts.length) : "-"}</b> <span class="small muted">rata-rata</span></span><span><b class="mono">${ts.length ? Math.max(...ts) : "-"}</b> <span class="small muted">terbaik</span></span></div>` + note + itemsTable(myItems);
+  bindRows(el, myItems);
+}
+async function loadTeam(){
+  await ready;
+  const el = $("p-team");
+  if (!db || !canEdit){ el.innerHTML = `<p class="empty">Rekap tim hanya untuk Editor (leader).</p>`; return; }
+  el.innerHTML = `<p class="small muted"><span class="spin" aria-hidden="true"></span>Memuat rekap…</p>`;
+  try {
+    const q = await db.collection("runs").get();
+    const rows = q.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => (b.lastAt||0) - (a.lastAt||0));
+    const names = {};
+    if (user && rows.length){ try { const ps = await user.profiles(rows.map(r => r.id)); rows.forEach(r => names[r.id] = ps?.[r.id]?.name || ""); } catch(e){} }
+    const nm = (r, i) => names[r.id] || "Peserta " + (i + 1);
+    el.innerHTML = rows.length ? `<p class="small muted" style="margin-bottom:10px">Klik nama untuk melihat setiap latihan, nilai, dan transkripnya.</p><div class="tw"><table><thead><tr><th>Nama</th><th>Peran</th><th class="n">Latihan</th><th class="n">Rata-rata</th><th class="n">Terbaik</th><th class="n">Terakhir</th><th>Latihan terakhir</th><th>Waktu</th></tr></thead><tbody>${rows.map((r,i) => `<tr class="click" data-u="${esc(r.id)}" data-n="${esc(nm(r,i))}"><td><b>${esc(nm(r,i))}</b></td><td>${r.role === "sch" ? "Scheduler" : "SC"}</td><td class="n">${r.n ?? "-"}</td><td class="n">${r.avg ?? "-"}</td><td class="n">${r.best ?? "-"}</td><td class="n">${r.last ?? "-"}</td><td>${esc(r.lastScen || "-")}</td><td class="small">${r.lastAt ? fmtDate(r.lastAt) : "-"}</td></tr>`).join("")}</tbody></table></div><div id="team-detail" style="margin-top:14px"></div>`
+      : `<p class="empty">Belum ada nilai tersimpan di sini. SC dengan akses Viewer mengirim hasil lewat screenshot atau Salin ringkasan.</p>`;
+    el.querySelectorAll("tr[data-u]").forEach(tr => tr.onclick = async () => {
+      const d = $("team-detail"); d.innerHTML = `<p class="small muted"><span class="spin" aria-hidden="true"></span>Memuat…</p>`;
+      try { const q2 = await db.collection("runs/" + tr.dataset.u + "/items").orderBy("at", "desc").limit(100).get(); const items = q2.docs.map(x => x.data());
+        d.innerHTML = `<h3 style="margin-bottom:8px">${esc(tr.dataset.n)}</h3>` + itemsTable(items); bindRows(d, items, tr.dataset.n);
+      } catch(e){ d.innerHTML = `<p class="empty">Gagal memuat. Coba lagi.</p>`; }
+    });
+  } catch(e){ el.innerHTML = `<p class="empty">Gagal memuat rekap. Coba lagi sebentar lagi.</p>`; }
+}
+
+renderBoards(); renderResume();
+try { if (location.hash) location.hash = ""; } catch(e){}
+
+})();
+</script>
+
+</body></html>

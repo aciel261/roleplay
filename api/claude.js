@@ -64,10 +64,11 @@ module.exports = async (req, res) => {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        "content-type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
+  "content-type": "application/json",
+  "x-api-key": ANTHROPIC_API_KEY,
+  "anthropic-version": "2023-06-01",
+  ...(ANTHROPIC_WORKSPACE_ID && { "anthropic-workspace-id": ANTHROPIC_WORKSPACE_ID }),
+},
       body: JSON.stringify({
         model: MODELS[tier],
         max_tokens: MAX_TOKENS[tier],
